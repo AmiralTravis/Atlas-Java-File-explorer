@@ -1,3 +1,5 @@
+package atlas;
+
 import java.util.Scanner;
 import java.awt.Desktop;
 import java.io.File;
