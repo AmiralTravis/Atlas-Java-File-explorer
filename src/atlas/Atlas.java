@@ -2,7 +2,11 @@ package atlas;
 
 import java.util.Scanner;
 import java.awt.Desktop;
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import atlas.scanner.FileScanner;
+import atlas.scanner.ScanResult;
 
 class Atlas {
 
@@ -12,7 +16,8 @@ class Atlas {
 
         Scanner scanner = new Scanner(System.in);
 
-        AtlasState state = new AtlasState();
+        AtlasState state = new AtlasState(Paths.get("\\"));
+        FileScanner fileScanner = new FileScanner();
 
         while (true) {
 
@@ -20,13 +25,20 @@ class Atlas {
 
             System.out.println("Menu:");
 
-            System.out.println("show root\nshow current\nopen {name}\nparent dir\nexit\n");
+            System.out.println(
+                "show root\n" + 
+                "show current\n" +
+                "open {name}\n" +
+                "parent dir\n" +
+                "scan\n" +
+                "exit\n"
+            );
 
             String input = scanner.nextLine();
 
-            String Menu_result = Menu_runner(input, state);
+            String Menu_result = Menu_runner(input, state, fileScanner);
 
-            if(Menu_result == "exit") {
+            if(Menu_result.equals("exit")) {
                 scanner.close();
                 return;
             }
@@ -38,7 +50,11 @@ class Atlas {
         
     }
 
-    private static String Menu_runner(String a, AtlasState state) {
+    private static String Menu_runner(
+        String a, 
+        AtlasState state, 
+        FileScanner fileScanner
+    ) {
         
         if (a.equals("show root")) {
             Show_root();
@@ -56,21 +72,9 @@ class Atlas {
 
             String itemName = a.substring(5);
 
-            if (state.currentPath.getPath().equals("\\")) {
+            Path itemPath = state.currentPath.resolve(itemName);
 
-                File itemTypeFile = new File(state.currentPath + itemName);
-
-                Open_item(itemTypeFile, state);
-
-            }
-
-            else {
-
-                File itemTypeFile = new File(state.currentPath + "\\" + itemName);
-
-                Open_item(itemTypeFile, state);
-
-            }
+            Open_item(itemPath, state);
             
             return "\n";
         }
@@ -78,6 +82,19 @@ class Atlas {
         else if (a.equals("parent dir")) {
 
             Parent_dir(state);
+
+            return "\n";
+
+        }
+
+        else if (a.equals("scan")) {
+
+            ScanResult result = fileScanner.scan(state.currentPath);
+
+            System.out.println("\nScan Complete.");
+            System.out.println("Files Found: " + result.getFilesFound());
+            System.out.println("Folders Found: " + result.getFoldersFound());
+            System.out.println("Skipped: " + result.getSkippedFound());
 
             return "\n";
 
@@ -93,114 +110,98 @@ class Atlas {
 
     private static void Show_root() {
 
-        File directory = new File("\\");
+        Path directory = Paths.get("\\");
 
-        File[] items = directory.listFiles();
+        try (var items = java.nio.file.Files.list(directory)) {
 
-        for (File item : items) {
-            
-            if (item.isFile()) {
+            items.forEach(item -> {
 
-                System.out.println(item.getName());
-            
-            }
+                if (java.nio.file.Files.isRegularFile(item)) {
+                    System.out.println(item.getFileName());
+                }
 
-            if (item.isDirectory()) {
+                else if (java.nio.file.Files.isDirectory(item)) {
+                    System.out.println("\\" + item.getFileName());
+                }
 
-                System.out.println("\\"+item.getName());
-            
-            }
-            
+            });
+
+        } catch (Exception e) {
+
+            System.err.println("Could not read root directory: " + e.getMessage());
+
         }
-        
     }
 
     private static void Show_current(AtlasState state) {
 
-        File directory = state.currentPath;
+        Path directory = state.currentPath;
 
-        File[] items = directory.listFiles();
+        try (var items = java.nio.file.Files.list(directory)) {
 
-        for (File item : items) {
-            
-            if (item.isFile()) {
+            items.forEach(item -> {
 
-                System.out.println(item.getName());
-            
-            }
+                if (java.nio.file.Files.isRegularFile(item)) {
+                    System.out.println(item.getFileName());
+                }
 
-            if (item.isDirectory()) {
+                else if (java.nio.file.Files.isDirectory(item)) {
+                    System.out.println("\\" + item.getFileName());
+                }
 
-                System.out.println("\\"+item.getName());
-            
-            }
-            
+            });
+
+        } catch (Exception e) {
+
+            System.err.println("Could not read directory: " + e.getMessage());
+
         }
-
     }
 
-    private static void Open_item(File itemTypeFile, AtlasState state) {
+    private static void Open_item(Path itemPath, AtlasState state) {
 
-        // System.out.println(itemTypeFile);
+        if (java.nio.file.Files.exists(itemPath)) {
 
-
-        if (itemTypeFile.exists()) {
-
-            // System.out.println(itemTypeFile);
-
-            if (itemTypeFile.isFile()) {
+            if (java.nio.file.Files.isRegularFile(itemPath)) {
 
                 try {
 
-                    Desktop.getDesktop().open(itemTypeFile);
-                    
+                    Desktop.getDesktop().open(itemPath.toFile());
+
                 } catch (Exception e) {
 
-                    System.err.println("Error occured during opening the File " + itemTypeFile + ": " + e);
+                    System.err.println(
+                        "Error occurred while opening the file "
+                        + itemPath + ": " + e
+                    );
 
                 }
 
             }
 
-            else if (itemTypeFile.isDirectory()) {
+            else if (java.nio.file.Files.isDirectory(itemPath)) {
 
-                state.currentPath = itemTypeFile;
+                state.currentPath = itemPath;
 
-                File[] items = itemTypeFile.listFiles();
-
-                for (File item : items) {
-
-                    if (item.isFile()) {
-
-                        System.out.println(item.getName());
-                    
-                    }
-
-                    if (item.isDirectory()) {
-
-                        System.out.println("\\"+item.getName());
-                    
-                    }
-
-                }
+                Show_current(state);
 
             }
 
         }
-
 
         else {
 
-            System.err.println("This item doesnt exist in this directory.");
+            System.err.println("This item doesn't exist in this directory.");
 
         }
-
-        
     }
 
-    private static File Parent_dir(AtlasState state) {
 
-        File parent = state.currentPath.getParentFile();
+
+
+    private static Path Parent_dir(AtlasState state) {
+
+        Path parent = state.currentPath.getParent();
  
         if ( parent != null) {
 
@@ -224,8 +225,3 @@ class Atlas {
 }
 
 
-class AtlasState {
-
-    File currentPath = new File("\\");
-
-}
