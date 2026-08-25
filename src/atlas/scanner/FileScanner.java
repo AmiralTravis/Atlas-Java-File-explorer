@@ -64,12 +64,8 @@ public class FileScanner {
                         IOException exception
                     ) {
 
-                        // System.err.println(
-                        //     "Could not access: "
-                        //     + file
-                        //     + " — "
-                        //     + exception.getMessage()
-                        // );
+                        result.incrementSkipped();
+                        progress.incrementSkipped();
 
                         return FileVisitResult.SKIP_SUBTREE;
                     }

@@ -8,7 +8,7 @@ public class Atlas {
 
     public static void main(String[] args) {
 
-        System.err.println(
+        System.out.println(
             "Welcome to Atlas File Explorer:\n"
         );
 
@@ -21,86 +21,105 @@ public class Atlas {
             new FileScanner();
 
 
+        /*
+         * Start dedicated input thread.
+         *
+         * Its only job is to wait for keyboard input
+         * and place commands into the command queue.
+         */
+        Thread inputThread =
+            new Thread(
+                new InputThread(state, scanner),
+                "Atlas-Input"
+            );
+
+        inputThread.setDaemon(true);
+        inputThread.start();
+
+
+        /*
+         * Main application loop.
+         *
+         * The main thread NEVER waits for keyboard input.
+         */
         while (true) {
 
-            /*
-             * If a scan has finished, display its result
-             * before showing the next menu.
-             */
-            // if (
-            //     !state.scanRunning.get()
-            //     && state.scanResult != null
-            // ) {
-
-            //     if (state.cancelScanRequested.get()) {
-
-            //         System.out.println(
-            //             "Scan cancelled."
-            //         );
-
-            //     } else {
-
-            //         System.out.println(
-            //             "Scan complete."
-            //         );
-            //     }
-
-            //     System.out.println(
-            //         "Files Found: " +
-            //         state.scanResult.getFilesFound()
-            //     );
-
-            //     System.out.println(
-            //         "Folders Found: " +
-            //         state.scanResult.getFoldersFound()
-            //     );
-
-            //     System.out.println();
-
-            //     state.scanResult = null;
-            // }
-
 
             /*
-             * Display the appropriate menu.
+             * Process any command that has arrived.
+             *
+             * poll() returns immediately if there is
+             * currently no command.
              */
-            AtlasMenu.show(state);
+            String input =
+                state.commandQueue.poll();
 
 
-            /*
-             * Wait for user input.
-             */
-            String input = scanner.nextLine();
+            if (input != null) {
+
+                String result =
+                    AtlasMenu.handleCommand(
+                        input,
+                        state,
+                        fileScanner
+                    );
 
 
-            /*
-             * Let AtlasMenu handle the command.
-             */
-            String result =
-                AtlasMenu.handleCommand(
-                    input,
-                    state,
-                    fileScanner
-                );
+                /*
+                 * Exit application.
+                 */
+                if (result.equals("exit")) {
+
+                    System.exit(0);
+                }
 
 
-            /*
-             * Exit application.
-             */
-            if (result.equals("exit")) {
+                /*
+                 * Store command output for the main
+                 * thread to render.
+                 */
+                if (!result.isEmpty()) {
 
-                scanner.close();
+                    state.lastMessage = result;
 
-                return;
+                    state.uiNeedsRender = true;
+                }
             }
 
 
             /*
-             * Print command result if there is one.
+             * Check for automatic state changes.
+             *
+             * For example:
+             *
+             * Scan thread finishes
+             *        ↓
+             * scanRunning = false
+             *        ↓
+             * main thread notices here
              */
-            if (!result.isEmpty()) {
+            AtlasMenu.update(state);
 
-                System.out.println(result);
+
+            /*
+             * Render UI if something changed.
+             */
+            AtlasMenu.renderIfNeeded(state);
+
+
+            /*
+             * Prevent the main loop from consuming
+             * an entire CPU core while idle.
+             */
+            try {
+
+                Thread.sleep(50);
+
+            } catch (InterruptedException e) {
+
+                Thread.currentThread().interrupt();
+
+                return;
             }
         }
     }
