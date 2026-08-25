@@ -6,6 +6,7 @@ public class ScanProgress {
 
     private final AtomicInteger filesFound = new AtomicInteger();
     private final AtomicInteger foldersFound = new AtomicInteger();
+    private final AtomicInteger skippedFound = new AtomicInteger();
 
     private volatile String currentPath = "";
 
@@ -17,12 +18,20 @@ public class ScanProgress {
         foldersFound.incrementAndGet();
     }
 
+    public void incrementSkipped() {
+        skippedFound.incrementAndGet();
+    }
+
     public int getFilesFound() {
         return filesFound.get();
     }
 
     public int getFoldersFound() {
         return foldersFound.get();
+    }
+
+    public int getSkippedFound() {
+        return skippedFound.get();
     }
 
     public void setCurrentPath(String path) {
