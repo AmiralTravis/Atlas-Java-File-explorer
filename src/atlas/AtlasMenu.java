@@ -1,11 +1,7 @@
 package atlas;
 
-import java.awt.Desktop;
-import java.io.File;
-
 import atlas.scanner.FileScanner;
-import atlas.scanner.ScanProgress;
-import atlas.scanner.ScanResult;
+import atlas.scanner.ScanUtils;
 
 public class AtlasMenu {
 
@@ -228,13 +224,13 @@ public class AtlasMenu {
 
         if (input.equals("progress")) {
 
-            return showProgress(state);
+            return ScanUtils.showProgress(state);
         }
 
 
         else if (input.equals("cancel")) {
 
-            cancelScan(state);
+            ScanUtils.cancelScan(state);
 
             return "";
         }
@@ -263,7 +259,7 @@ public class AtlasMenu {
 
         if (input.equals("show root")) {
 
-            showRoot();
+            DirectoryBrowser.showRoot();
 
             return "";
         }
@@ -271,7 +267,7 @@ public class AtlasMenu {
 
         else if (input.equals("show current")) {
 
-            showCurrent(state);
+            DirectoryBrowser.showCurrent(state);
 
             return "";
         }
@@ -282,7 +278,7 @@ public class AtlasMenu {
             String itemName =
                 input.substring(5);
 
-            openItem(
+            DirectoryBrowser.openItem(
                 itemName,
                 state
             );
@@ -293,7 +289,7 @@ public class AtlasMenu {
 
         else if (input.equals("parent dir")) {
 
-            parentDir(state);
+            DirectoryBrowser.parentDir(state);
 
             return "";
         }
@@ -301,7 +297,7 @@ public class AtlasMenu {
 
         else if (input.equals("scan")) {
 
-            startScan(
+            ScanUtils.startScan(
                 state,
                 fileScanner
             );
@@ -323,306 +319,7 @@ public class AtlasMenu {
     }
 
 
+    
 
-    /*
-     * ============================================================
-     * START SCAN
-     * ============================================================
-     */
-    private static void startScan(
-        AtlasState state,
-        FileScanner fileScanner
-    ) {
 
-        state.cancelScanRequested.set(false);
-
-        state.scanRunning.set(true);
-
-        state.uiScanning = true;
-
-        state.scanResult = null;
-
-
-        ScanProgress progress =
-            new ScanProgress();
-
-        state.scanProgress =
-            progress;
-
-
-        Thread scanThread =
-            new Thread(() -> {
-
-                ScanResult result =
-                    fileScanner.scan(
-                        state.currentPath,
-                        progress,
-                        state.cancelScanRequested
-                    );
-
-
-                /*
-                 * Scan thread ONLY updates state.
-                 *
-                 * It does NOT print anything.
-                 */
-                state.scanResult =
-                    result;
-
-                state.scanRunning.set(false);
-
-            }, "Atlas-Scanner");
-
-
-        scanThread.start();
-    }
-
-
-
-    /*
-     * ============================================================
-     * PROGRESS
-     * ============================================================
-     */
-    private static String showProgress(
-        AtlasState state
-    ) {
-
-        if (state.scanProgress == null) {
-
-            return "No scan progress available.";
-        }
-
-
-        return
-            "Files Found: " +
-            state.scanProgress.getFilesFound() +
-
-            "\nFolders Found: " +
-            state.scanProgress.getFoldersFound() +
-
-            "\nSkipped: " +
-            state.scanProgress.getSkippedFound() +
-
-            "\nCurrent: " +
-            state.scanProgress.getCurrentPath();
-    }
-
-
-
-    /*
-     * ============================================================
-     * ROOT
-     * ============================================================
-     */
-    private static void showRoot() {
-
-        File directory =
-            new File("\\");
-
-        File[] items =
-            directory.listFiles();
-
-
-        if (items == null) {
-
-            System.out.println(
-                "Unable to access root directory."
-            );
-
-            return;
-        }
-
-
-        for (File item : items) {
-
-            if (item.isFile()) {
-
-                System.out.println(
-                    item.getName()
-                );
-            }
-
-            else if (item.isDirectory()) {
-
-                System.out.println(
-                    "\\" +
-                    item.getName()
-                );
-            }
-        }
-    }
-
-
-
-    /*
-     * ============================================================
-     * CURRENT DIRECTORY
-     * ============================================================
-     */
-    private static void showCurrent(
-        AtlasState state
-    ) {
-
-        File directory =
-            state.currentPath.toFile();
-
-        File[] items =
-            directory.listFiles();
-
-
-        if (items == null) {
-
-            System.out.println(
-                "Unable to access: " +
-                state.currentPath
-            );
-
-            return;
-        }
-
-
-        for (File item : items) {
-
-            if (item.isFile()) {
-
-                System.out.println(
-                    item.getName()
-                );
-            }
-
-            else if (item.isDirectory()) {
-
-                System.out.println(
-                    "\\" +
-                    item.getName()
-                );
-            }
-        }
-    }
-
-
-
-    /*
-     * ============================================================
-     * OPEN ITEM
-     * ============================================================
-     */
-    private static void openItem(
-        String itemName,
-        AtlasState state
-    ) {
-
-        File item =
-            state.currentPath
-                .resolve(itemName)
-                .toFile();
-
-
-        if (!item.exists()) {
-
-            state.lastMessage =
-                "This item doesn't exist in this directory.";
-
-            state.uiNeedsRender = true;
-
-            return;
-        }
-
-
-        /*
-         * Opening a file means opening it with the
-         * operating system.
-         */
-        if (item.isFile()) {
-
-            try {
-
-                Desktop.getDesktop().open(item);
-
-            }
-
-            catch (Exception e) {
-
-                state.lastMessage =
-                    "Error opening file " +
-                    item +
-                    ": " +
-                    e.getMessage();
-
-                state.uiNeedsRender = true;
-            }
-
-            return;
-        }
-
-
-        /*
-         * Opening a directory only changes our
-         * current path.
-         */
-        if (item.isDirectory()) {
-
-            state.currentPath =
-                item.toPath();
-
-            state.uiNeedsRender = true;
-        }
-    }
-
-
-
-    /*
-     * ============================================================
-     * PARENT DIRECTORY
-     * ============================================================
-     */
-    private static void parentDir(
-        AtlasState state
-    ) {
-
-        if (
-            state.currentPath.getParent() != null
-        ) {
-
-            state.currentPath =
-                state.currentPath.getParent();
-
-            state.uiNeedsRender = true;
-        }
-
-        else {
-
-            state.lastMessage =
-                "Already at root dir!";
-
-            state.uiNeedsRender = true;
-        }
-    }
-
-
-
-    /*
-     * ============================================================
-     * CANCEL SCAN
-     * ============================================================
-     */
-    private static void cancelScan(
-        AtlasState state
-    ) {
-
-        /*
-         * Do NOT wait for the scanner here.
-         *
-         * We simply request cancellation.
-         */
-        state.cancelScanRequested.set(true);
-
-
-        state.lastMessage =
-            "Cancellation requested...";
-
-
-        state.uiNeedsRender = true;
-    }
 }
