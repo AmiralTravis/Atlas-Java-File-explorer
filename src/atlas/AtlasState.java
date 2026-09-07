@@ -11,17 +11,18 @@ import atlas.scanner.ScanResult;
 
 public class AtlasState {
 
-    Path currentPath;
+    public Path currentPath;
 
 
     /*
      * Scan state
      */
-    AtomicBoolean scanRunning =
+    public AtomicBoolean scanRunning =
         new AtomicBoolean(false);
 
-    AtomicBoolean cancelScanRequested =
+    public AtomicBoolean cancelScanRequested =
         new AtomicBoolean(false);
+
 
     /*
      * UI-only scanning flag.
@@ -30,11 +31,11 @@ public class AtlasState {
      * scanner thread), this is only ever read/written
      * by the main thread, so there's no race.
      */
-    boolean uiScanning = false;
+    public boolean uiScanning = false;
 
-    ScanProgress scanProgress;
+    public ScanProgress scanProgress;
 
-    volatile ScanResult scanResult;
+    public volatile ScanResult scanResult;
 
 
     /*
@@ -50,9 +51,9 @@ public class AtlasState {
     /*
      * UI state.
      */
-    volatile boolean uiNeedsRender = true;
+    public volatile boolean uiNeedsRender = true;
 
-    volatile String lastMessage = "";
+    public volatile String lastMessage = "";
 
 
     public AtlasState() {
