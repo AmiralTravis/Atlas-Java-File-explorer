@@ -18,7 +18,7 @@ public class AtlasState {
 
     public State currentState = State.MAIN_MENU;
 
-    public BlockingQueue<QueueItem> commandQueue = new LinkedBlockingQueue<>();
+    public BlockingQueue<QueueItem> actionQueue = new LinkedBlockingQueue<>();
 
     public Path currentPath = Paths.get("\\users\\asbia\\downloads");
 

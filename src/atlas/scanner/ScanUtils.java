@@ -23,7 +23,7 @@ public class ScanUtils {
 
         try {
 
-            state.commandQueue.put(result);
+            state.actionQueue.put(result);
         
         } catch (InterruptedException e) {
             
@@ -50,7 +50,20 @@ public class ScanUtils {
         
         if (cancelled) {
             
-            System.out.println("\nScan cancelled successfully!\n");
+            System.out.println("\nScan cancelled successfully!");
+            String message = """
+
+                            Scan Progress result :- 
+                            Files Found: """ + state.currentScanResult.getFilesFound() + """
+
+                            Folders Found: """ + state.currentScanResult.getFoldersFound() + """
+
+                            Skipped: """ + state.currentScanResult.getSkippedFound() + """
+                            """;            
+            
+            System.out.println(message);
+            
+            
             state.currentState = AtlasState.State.MAIN_MENU;
             state.currentScanPath = null;
             state.currentScanResult = null;

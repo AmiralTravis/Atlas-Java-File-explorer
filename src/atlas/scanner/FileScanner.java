@@ -24,6 +24,10 @@ public class FileScanner {
                         BasicFileAttributes attributes
                     ) {
 
+                        if (Thread.currentThread().isInterrupted()) {
+                            return FileVisitResult.TERMINATE;
+                        }
+
                         result.incrementFolders();
 
                         return FileVisitResult.CONTINUE;
@@ -34,6 +38,10 @@ public class FileScanner {
                         Path file,
                         BasicFileAttributes attributes
                     ) {
+
+                        if (Thread.currentThread().isInterrupted()) {
+                            return FileVisitResult.TERMINATE;
+                        }
 
                         result.incrementFiles();
 
@@ -52,6 +60,10 @@ public class FileScanner {
                             + " — "
                             + exception.getMessage()
                         );
+
+                        if (Thread.currentThread().isInterrupted()) {
+                            return FileVisitResult.TERMINATE;
+                        }
 
                         result.incrementSkipped();
 

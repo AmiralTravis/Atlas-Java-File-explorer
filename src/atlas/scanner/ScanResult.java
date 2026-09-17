@@ -3,9 +3,9 @@ import atlas.QueueItem;
 
 public class ScanResult implements QueueItem {
     
-    private int filesFound;
-    private int foldersFound;
-    private int skippedFound;
+    private volatile int filesFound;
+    private volatile int foldersFound;
+    private volatile int skippedFound;
 
     public void incrementFiles() {
         filesFound++;
