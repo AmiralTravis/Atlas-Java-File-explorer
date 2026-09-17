@@ -25,7 +25,7 @@ class InputThread implements Runnable {
 
             try {
             
-                state.commandQueue.put(new CommandItem(input));
+                state.actionQueue.put(new CommandItem(input));
             
             } catch (InterruptedException e) {
                 

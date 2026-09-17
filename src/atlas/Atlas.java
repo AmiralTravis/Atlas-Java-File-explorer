@@ -41,7 +41,7 @@ class Atlas {
 
             try {
 
-                item = state.commandQueue.take();
+                item = state.actionQueue.take();
             
             } catch (InterruptedException e) {
 
