@@ -6,17 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FileScanner {
 
-    public ScanResult scan(
-        Path root,
-        ScanProgress progress,
-        AtomicBoolean cancelRequested
-    ) {
 
-        ScanResult result = new ScanResult();
+    public static ScanResult scan(Path root, ScanResult result) {
 
         try {
 
@@ -30,13 +24,7 @@ public class FileScanner {
                         BasicFileAttributes attributes
                     ) {
 
-                        if (cancelRequested.get()) {
-                            return FileVisitResult.TERMINATE;
-                        }
-
                         result.incrementFolders();
-                        progress.incrementFolders();
-                        progress.setCurrentPath(directory.toString());
 
                         return FileVisitResult.CONTINUE;
                     }
@@ -47,13 +35,7 @@ public class FileScanner {
                         BasicFileAttributes attributes
                     ) {
 
-                        if (cancelRequested.get()) {
-                            return FileVisitResult.TERMINATE;
-                        }
-
                         result.incrementFiles();
-                        progress.incrementFiles();
-                        progress.setCurrentPath(file.toString());
 
                         return FileVisitResult.CONTINUE;
                     }
@@ -64,8 +46,14 @@ public class FileScanner {
                         IOException exception
                     ) {
 
+                        System.err.println(
+                            "Could not access: "
+                            + file
+                            + " — "
+                            + exception.getMessage()
+                        );
+
                         result.incrementSkipped();
-                        progress.incrementSkipped();
 
                         return FileVisitResult.SKIP_SUBTREE;
                     }

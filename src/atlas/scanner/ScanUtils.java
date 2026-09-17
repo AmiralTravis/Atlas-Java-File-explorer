@@ -1,5 +1,6 @@
 package atlas.scanner;
 
+
 import atlas.AtlasState;
 
 public class ScanUtils {
@@ -11,51 +12,26 @@ public class ScanUtils {
      * ============================================================
      */
     public static void startScan(
-        AtlasState state,
-        FileScanner fileScanner
+        AtlasState state
     ) {
 
-        state.cancelScanRequested.set(false);
+        state.currentScanPath = state.currentPath;
 
-        state.scanRunning.set(true);
+        state.currentScanResult = new ScanResult();
+        
+        ScanResult result = FileScanner.scan(state.currentScanPath, state.currentScanResult);
 
-        state.uiScanning = true;
+        try {
 
-        state.scanResult = null;
+            state.commandQueue.put(result);
+        
+        } catch (InterruptedException e) {
+            
+            Thread.currentThread().interrupt();
+            return;
+        
+        }
 
-
-        ScanProgress progress =
-            new ScanProgress();
-
-        state.scanProgress =
-            progress;
-
-
-        Thread scanThread =
-            new Thread(() -> {
-
-                ScanResult result =
-                    fileScanner.scan(
-                        state.currentPath,
-                        progress,
-                        state.cancelScanRequested
-                    );
-
-
-                /*
-                 * Scan thread ONLY updates state.
-                 *
-                 * It does NOT print anything.
-                 */
-                state.scanResult =
-                    result;
-
-                state.scanRunning.set(false);
-
-            }, "Atlas-Scanner");
-
-
-        scanThread.start();
     }
 
     /*
@@ -67,19 +43,26 @@ public class ScanUtils {
         AtlasState state
     ) {
 
-        /*
-         * Do NOT wait for the scanner here.
-         *
-         * We simply request cancellation.
-         */
-        state.cancelScanRequested.set(true);
+        System.out.println("\nCancel scan requested...");
+        System.out.println("Cancelling scan...");
 
+        boolean cancelled = state.scanFuture.cancel(true);
+        
+        if (cancelled) {
+            
+            System.out.println("\nScan cancelled successfully!\n");
+            state.currentState = AtlasState.State.MAIN_MENU;
+            state.currentScanPath = null;
+            state.currentScanResult = null;
+            state.scanFuture = null;
 
-        state.lastMessage =
-            "Cancellation requested...";
+        }
 
+        else {
+            System.out.println("Scan could not be cancelled, please try again.");
+        }
+        
 
-        state.uiNeedsRender = true;
     }
     
 
@@ -88,30 +71,34 @@ public class ScanUtils {
      * PROGRESS
      * ============================================================
      */
-    public static String showProgress(
+    public static void showProgress(
         AtlasState state
     ) {
 
-        if (state.scanProgress == null) {
+        String message;
 
-            return "No scan progress available.";
+        if (state.currentState == AtlasState.State.SCANNING) {
+
+            message = """
+                    
+                    Scan Progress result :- 
+                    Files Found: """ + state.currentScanResult.getFilesFound() + """
+
+                    Folders Found: """ + state.currentScanResult.getFoldersFound() + """
+                    
+                    Skipped: """ + state.currentScanResult.getSkippedFound() + """
+                    """;
+
         }
 
+        else {
 
-        return
-            "Files Found: " +
-            state.scanProgress.getFilesFound() +
+            message = "No scan progress available.";
+        }
 
-            "\nFolders Found: " +
-            state.scanProgress.getFoldersFound() +
-
-            "\nSkipped: " +
-            state.scanProgress.getSkippedFound() +
-
-            "\nCurrent: " +
-            state.scanProgress.getCurrentPath();
+        System.out.println(message);
+        
     }
-
 
 
 }

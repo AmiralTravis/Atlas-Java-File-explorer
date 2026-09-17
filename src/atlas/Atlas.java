@@ -1,126 +1,85 @@
 package atlas;
 
-import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import atlas.scanner.FileScanner;
 
-public class Atlas {
+class Atlas {
 
     public static void main(String[] args) {
+        
+        System.out.println("\nWelcome to Atlas File System!");
 
-        System.out.println(
-            "Welcome to Atlas File Explorer:\n"
-        );
-
-        Scanner scanner = new Scanner(System.in);
-
-        AtlasState state =
-            new AtlasState();
-
-        FileScanner fileScanner =
-            new FileScanner();
+        AtlasState state = new AtlasState();
 
 
-        /*
-         * Start dedicated input thread.
-         *
-         * Its only job is to wait for keyboard input
-         * and place commands into the command queue.
-         */
-        Thread inputThread =
-            new Thread(
-                new InputThread(state, scanner),
-                "Atlas-Input"
-            );
 
-        inputThread.setDaemon(true);
+        InputThread input = new InputThread(state);
+
+        Thread inputThread = new Thread(input);
+
         inputThread.start();
 
 
-        /*
-         * Main application loop.
-         *
-         * The main thread NEVER waits for keyboard input.
-         */
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+
         while (true) {
 
 
-            /*
-             * Process any command that has arrived.
-             *
-             * poll() returns immediately if there is
-             * currently no command.
-             */
-            String input =
-                state.commandQueue.poll();
-
-
-            if (input != null) {
-
-                String result =
-                    AtlasMenu.handleCommand(
-                        input,
-                        state,
-                        fileScanner
-                    );
-
-
-                /*
-                 * Exit application.
-                 */
-                if (result.equals("exit")) {
-
-                    System.exit(0);
-                }
-
-
-                /*
-                 * Store command output for the main
-                 * thread to render.
-                 */
-                if (!result.isEmpty()) {
-
-                    state.lastMessage = result;
-
-                    state.uiNeedsRender = true;
-                }
+            if (state.currentState.equals(AtlasState.State.EXITING)) {
+                System.out.println("\nExiting application...");
+                System.exit(0);
             }
+            
 
+            QueueItem item;
 
-            /*
-             * Check for automatic state changes.
-             *
-             * For example:
-             *
-             * Scan thread finishes
-             *        ↓
-             * scanRunning = false
-             *        ↓
-             * main thread notices here
-             */
-            AtlasMenu.update(state);
+            String menu = AtlasMenu.menuRender(state);
 
+            System.out.println(menu);
 
-            /*
-             * Render UI if something changed.
-             */
-            AtlasMenu.renderIfNeeded(state);
-
-
-            /*
-             * Prevent the main loop from consuming
-             * an entire CPU core while idle.
-             */
             try {
 
-                Thread.sleep(50);
-
+                item = state.commandQueue.take();
+            
             } catch (InterruptedException e) {
 
                 Thread.currentThread().interrupt();
-
                 return;
+            
             }
+            
+            if (item instanceof CommandItem commandItem) {
+                
+                String command = commandItem.getValue();
+                
+                String result = CommandOps.handleCommand(command, state, executor);
+
+                if (result.equals("invalid command")) {
+                    System.out.println("\nInvalid command, please try again.");
+                }
+
+            }
+
+            else {
+
+                RenderOutput.renderResult(item);
+                state.currentState = AtlasState.State.MAIN_MENU;
+                state.currentScanPath = null;
+                state.currentScanResult = null;
+                state.scanFuture = null;
+
+            }
+            
+
+
+
         }
+        
+
     }
+
+
+
 }

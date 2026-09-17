@@ -2,57 +2,40 @@ package atlas;
 
 import java.util.Scanner;
 
-public class InputThread implements Runnable {
+class InputThread implements Runnable {
 
-    private final AtlasState state;
-    private final Scanner scanner;
+    private AtlasState state;
 
-
-    public InputThread(
-        AtlasState state,
-        Scanner scanner
-    ) {
-
+    InputThread(AtlasState state) {
         this.state = state;
-        this.scanner = scanner;
     }
 
 
     @Override
     public void run() {
 
-        try {
+        Scanner scanner = new Scanner(System.in);
 
-            while (true) {
-
-                /*
-                 * This is the ONLY thread that waits
-                 * for keyboard input.
-                 */
-                if (!scanner.hasNextLine()) {
-
-                    return;
-                }
+        while (true) {
 
 
-                String input =
-                    scanner.nextLine();
+            String input = scanner.nextLine();
 
+            System.out.println("\n=======================================");
 
-                /*
-                 * Don't process the command here.
-                 *
-                 * Just hand it to the main thread.
-                 */
-                state.commandQueue.offer(input);
+            try {
+            
+                state.commandQueue.put(new CommandItem(input));
+            
+            } catch (InterruptedException e) {
+                
+                Thread.currentThread().interrupt();
+                return;
+            
             }
 
-        } catch (Exception e) {
 
-            /*
-             * Input stream closed during shutdown —
-             * safe to ignore.
-             */
         }
+
     }
 }
