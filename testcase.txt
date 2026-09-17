@@ -1,0 +1,301 @@
+===10:55am 17-9-2026===
+===final test case before commit===
+===case description : {
+    working perfectly fine, back to intended logic of from commit "Fix ux issues" to 
+    commit "Reorder functions for modularity", but without bad ux due to ai slop code, 
+    fully rewritten the whole code on our own, by studying and learning about new concepts, 
+    none ai code involved in this commit, with a result of perfect test case. huge milestone!
+}===
+
+
+===Test : {
+
+Welcome to Atlas File System!
+
+===============MAIN MENU===============
+
+Current path:\users\asbia\downloads
+
+Menu Options:
+
+show root
+show current
+open {name}
+parent dir
+scan
+exit
+
+Enter command:
+
+progress
+
+=======================================
+
+Invalid command, please try again.
+
+===============MAIN MENU===============
+
+Current path:\users\asbia\downloads
+
+Menu Options:
+
+show root
+show current
+open {name}
+parent dir
+scan
+exit
+
+Enter command:
+
+cancel
+
+=======================================
+
+Invalid command, please try again.
+
+===============MAIN MENU===============
+
+Current path:\users\asbia\downloads
+
+Menu Options:
+
+show root
+show current
+open {name}
+parent dir
+scan
+exit
+
+Enter command:
+
+parent dir
+
+=======================================
+
+===============MAIN MENU===============
+
+Current path:\users\asbia
+
+Menu Options:
+
+show root
+show current
+open {name}
+parent dir
+scan
+exit
+
+Enter command:
+
+open downloads
+
+=======================================
+
+===============MAIN MENU===============
+
+Current path:\users\asbia\downloads
+
+Menu Options:
+
+show root
+show current
+open {name}
+parent dir
+scan
+exit
+
+Enter command:
+
+open downloads
+
+=======================================
+
+This item doesn't exist in this directory.
+
+===============MAIN MENU===============
+
+Current path:\users\asbia\downloads
+
+Menu Options:
+
+show root
+show current
+open {name}
+parent dir
+scan
+exit
+
+Enter command:
+
+scan
+
+=======================================
+
+---------------------------------------
+Scanning...
+---------------------------------------
+
+==============SCANNER MENU=============
+
+Menu Options:
+
+progress
+cancel
+
+Enter command:
+
+progress
+
+=======================================
+
+Scan Progress result :-
+Files Found:137361
+Folders Found:16584
+Skipped:0
+
+---------------------------------------
+Scanning...
+---------------------------------------
+
+==============SCANNER MENU=============
+
+Menu Options:
+
+progress
+cancel
+
+Enter command:
+
+
+Scanning Finished!
+
+Scan result :-
+Files found: 360100
+Folders found: 38726
+Skipped: 0
+
+===============MAIN MENU===============
+
+Current path:\users\asbia\downloads
+
+Menu Options:
+
+show root
+show current
+open {name}
+parent dir
+scan
+exit
+
+Enter command:
+
+scan
+
+=======================================
+
+---------------------------------------
+Scanning...
+---------------------------------------
+
+==============SCANNER MENU=============
+
+Menu Options:
+
+progress
+cancel
+
+Enter command:
+
+cancel
+
+=======================================
+
+Cancel scan requested...
+Cancelling scan...
+
+Scan cancelled successfully!
+
+
+===============MAIN MENU===============
+
+Current path:\users\asbia\downloads
+
+Menu Options:
+
+show root
+show current
+open {name}
+parent dir
+scan
+exit
+
+Enter command:
+
+cancel
+
+=======================================
+
+Invalid command, please try again.
+
+===============MAIN MENU===============
+
+Current path:\users\asbia\downloads
+
+Menu Options:
+
+show root
+show current
+open {name}
+parent dir
+scan
+exit
+
+Enter command:
+
+scan
+
+=======================================
+
+---------------------------------------
+Scanning...
+---------------------------------------
+
+==============SCANNER MENU=============
+
+Menu Options:
+
+progress
+cancel
+
+Enter command:
+
+
+Scanning Finished!
+
+Scan result :-
+Files found: 360100
+Folders found: 38726
+Skipped: 0
+
+===============MAIN MENU===============
+
+Current path:\users\asbia\downloads
+
+Menu Options:
+
+show root
+show current
+open {name}
+parent dir
+scan
+exit
+
+Enter command:
+
+exit
+
+=======================================
+
+}===
+

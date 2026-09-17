@@ -6,6 +6,9 @@ import java.awt.Desktop;
 public class DirectoryBrowser {
     
 
+
+    
+
     
     /*
      * ============================================================
@@ -24,7 +27,7 @@ public class DirectoryBrowser {
         if (items == null) {
 
             System.out.println(
-                "Unable to access root directory."
+                "\nUnable to access root directory."
             );
 
             return;
@@ -71,7 +74,7 @@ public class DirectoryBrowser {
         if (items == null) {
 
             System.out.println(
-                "Unable to access: " +
+                "\nUnable to access: " +
                 state.currentPath
             );
 
@@ -105,7 +108,7 @@ public class DirectoryBrowser {
      * OPEN ITEM
      * ============================================================
      */
-    static void openItem(
+    static String openItem(
         String itemName,
         AtlasState state
     ) {
@@ -118,39 +121,25 @@ public class DirectoryBrowser {
 
         if (!item.exists()) {
 
-            state.lastMessage =
-                "This item doesn't exist in this directory.";
+            System.out.println("\nThis item doesn't exist in this directory.");
 
-            state.uiNeedsRender = true;
-
-            return;
+            return "";
         }
 
 
-        /*
-         * Opening a file means opening it with the
-         * operating system.
-         */
         if (item.isFile()) {
 
             try {
 
                 Desktop.getDesktop().open(item);
-
+                
+                return "";
             }
 
             catch (Exception e) {
-
-                state.lastMessage =
-                    "Error opening file " +
-                    item +
-                    ": " +
-                    e.getMessage();
-
-                state.uiNeedsRender = true;
+                System.err.println("Error opening file: " + e);
             }
 
-            return;
         }
 
 
@@ -163,8 +152,10 @@ public class DirectoryBrowser {
             state.currentPath =
                 item.toPath();
 
-            state.uiNeedsRender = true;
+            return "";
         }
+
+        return "";
     }
 
 
@@ -174,7 +165,7 @@ public class DirectoryBrowser {
      * PARENT DIRECTORY
      * ============================================================
      */
-    static void parentDir(
+    static String parentDir(
         AtlasState state
     ) {
 
@@ -185,15 +176,14 @@ public class DirectoryBrowser {
             state.currentPath =
                 state.currentPath.getParent();
 
-            state.uiNeedsRender = true;
+            return "";
         }
 
         else {
 
-            state.lastMessage =
-                "Already at root dir!";
+            System.out.println("\nAlready at root dir!");
+            return "";
 
-            state.uiNeedsRender = true;
         }
     }
 

@@ -1,6 +1,7 @@
 package atlas.scanner;
+import atlas.QueueItem;
 
-public class ScanResult {
+public class ScanResult implements QueueItem {
     
     private int filesFound;
     private int foldersFound;
