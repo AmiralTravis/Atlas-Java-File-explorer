@@ -96,12 +96,22 @@ public class CommandOps {
 
         if (command.equals("scan")) {
 
-            if (state.currentScanPath != null) {
-
-                System.out.println("\nAlready scanning at: " + state.currentScanPath 
-                + "\nTry again after the scan is done.");
+            if (state.currentState.equals(AtlasState.State.SCANNING)) {
                 
+                if (state.currentScanPath != null) {
+
+                    System.out.println("\nAlready scanning at: " + state.currentScanPath 
+                    + "\nTry again after the scan is done.");
+                    
+                }
+
+                else {
+                    System.out.println("\nAlready scanning something.");
+                    System.out.println("Try again after the scan is done.");
+                }
+
                 return;
+
             }
 
             state.currentState = AtlasState.State.SCANNING;
