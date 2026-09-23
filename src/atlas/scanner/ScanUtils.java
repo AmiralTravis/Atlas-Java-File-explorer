@@ -18,8 +18,14 @@ public class ScanUtils {
         state.currentScanPath = state.currentPath;
 
         state.currentScanResult = new ScanResult();
+
+        state.atlasIndex = new Index();
         
-        ScanResult result = FileScanner.scan(state.currentScanPath, state.currentScanResult);
+        ScanResult result = FileScanner.scan(
+            state.currentScanPath, 
+            state.currentScanResult,
+            state.atlasIndex 
+        );
 
         try {
 

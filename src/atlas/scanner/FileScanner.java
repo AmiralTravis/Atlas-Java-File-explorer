@@ -7,10 +7,12 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
+import atlas.FileRecord;
+
 public class FileScanner {
 
 
-    public static ScanResult scan(Path root, ScanResult result) {
+    public static ScanResult scan(Path root, ScanResult result, Index atlasIndex) {
 
         try {
 
@@ -30,6 +32,15 @@ public class FileScanner {
 
                         result.incrementFolders();
 
+                        // System.out.println(
+                        //     "passed result.incrementFolders"
+                        // );
+
+                        atlasIndex.addFolder(directory);
+                        // System.out.println(
+                        //     "passed atlasIndex.addFolder(directory)"
+                        // );
+
                         return FileVisitResult.CONTINUE;
                     }
 
@@ -44,6 +55,20 @@ public class FileScanner {
                         }
 
                         result.incrementFiles();
+
+                        // System.out.println(
+                        //     "passed result.incrementFiles();"
+                        // );
+
+                        FileRecord record = new FileRecord(file, attributes);
+                        // System.out.println(
+                        //     "passed FileRecord record = new FileRecord(file, attributes);"
+                        // );
+
+                        atlasIndex.addFile(record);
+                        // System.out.println(
+                        //     "passed atlasIndex.addFile(record);"
+                        // );
 
                         return FileVisitResult.CONTINUE;
                     }

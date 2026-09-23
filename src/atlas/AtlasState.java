@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import atlas.scanner.ScanResult;
+import atlas.scanner.Index;
 
 public class AtlasState {
 
@@ -26,6 +27,8 @@ public class AtlasState {
     public volatile ScanResult currentScanResult; // the scan's data/progress
 
     public Future<?> scanFuture; // control over the scan task (cancel, check done, etc.)
+
+    public Index atlasIndex;
 
 }
 

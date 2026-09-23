@@ -3,6 +3,7 @@ package atlas;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import atlas.scanner.Index;
 
 class Atlas {
 
@@ -65,6 +66,17 @@ class Atlas {
             else {
 
                 RenderOutput.renderResult(item);
+
+                System.out.println("\n====================================\n");
+                System.out.println("AtlasIndex:");
+                System.out.println("fileList: [" );
+                Index.showFileRecords(state.atlasIndex.fileList);
+                System.out.println("]");
+                System.out.println("\n====================================\n");
+                System.out.println("folderList: " + state.atlasIndex.folderList);
+                System.out.println("\n====================================\n");
+
+
                 state.currentState = AtlasState.State.MAIN_MENU;
                 state.currentScanPath = null;
                 state.currentScanResult = null;
