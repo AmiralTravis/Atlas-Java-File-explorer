@@ -1,3 +1,5 @@
+# Atlas Java File Search & Management Application
+
 ## Project Phases
 
 ### Phase 0 — Learn Just Enough Java
