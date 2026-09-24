@@ -23,14 +23,25 @@ public class AtlasState {
 
     public BlockingQueue<QueueItem> actionQueue = new LinkedBlockingQueue<>();
 
-    public Path currentPath = Paths.get("\\users\\asbia\\downloads");
+    public Path currentPath = Paths.get("\\users\\asbia\\downloads\\mealzz");
 
-    public volatile Path currentScanPath = null;
+    public volatile Path currentScanPath = Paths.get("\\");
     public volatile ScanResult currentScanResult; // the scan's data/progress
 
     public Future<?> scanFuture; // control over the scan task (cancel, check done, etc.)
 
     public Index atlasIndex;
+
+    AtlasState() {
+        this(null);
+    }
+
+
+    AtlasState(Index atlasIndex) {
+        this.atlasIndex = atlasIndex;
+    }
+
+
 
 }
 

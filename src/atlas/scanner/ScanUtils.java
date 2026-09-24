@@ -1,6 +1,7 @@
 package atlas.scanner;
 
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -36,6 +37,17 @@ public class ScanUtils {
         
         LocalDateTime modifiedTime = LocalDateTime.now();
         state.atlasIndex.modifiedAt = modifiedTime;
+
+        try {
+    
+            IndexStore.writeIndex(state.atlasIndex);
+
+        } catch (IOException e) {
+
+            System.err.println("Failed to save Index to disk");
+            e.printStackTrace();
+
+        }
 
         try {
 
@@ -140,7 +152,7 @@ public class ScanUtils {
 
         if (state.atlasIndex == null) {
 
-            System.out.println("No Index exists. Please build an index to view about index.\n");
+            System.out.println("No Index exists. Please build a new index to view about index.\n");
             return;
         
         }

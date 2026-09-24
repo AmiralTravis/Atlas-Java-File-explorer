@@ -1,15 +1,16 @@
 package atlas.scanner;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 
 import atlas.FileRecord;
 
-public class Index {
+public class Index implements Serializable {
 
     public ArrayList<FileRecord> fileList = new ArrayList<>();
-    public ArrayList<Path> folderList = new ArrayList<>();
+    public ArrayList<String> folderList = new ArrayList<>();
 
     public int filesIndexed;
     public int foldersIndexed;
@@ -26,7 +27,7 @@ public class Index {
 
     void addFolder(Path folder) {
 
-        folderList.add(folder);
+        folderList.add(folder.toString());
 
     }
 

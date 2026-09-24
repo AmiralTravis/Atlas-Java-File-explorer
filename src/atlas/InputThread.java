@@ -14,28 +14,32 @@ class InputThread implements Runnable {
     @Override
     public void run() {
 
-        Scanner scanner = new Scanner(System.in);
+        try (Scanner scanner = new Scanner(System.in)) {
 
-        while (true) {
+            while (true) {
 
 
-            String input = scanner.nextLine();
+                String input = scanner.nextLine();
 
-            System.out.println("\n=======================================\n");
+                System.out.println("\n=======================================\n");
 
-            try {
-            
-                state.actionQueue.put(new CommandItem(input));
-            
-            } catch (InterruptedException e) {
+                try {
                 
-                Thread.currentThread().interrupt();
-                return;
-            
+                    state.actionQueue.put(new CommandItem(input));
+                
+                } catch (InterruptedException e) {
+                    
+                    Thread.currentThread().interrupt();
+                    return;
+                
+                }
+
+
             }
-
-
+        
         }
+
+        
 
     }
 }

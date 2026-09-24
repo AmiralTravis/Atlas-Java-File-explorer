@@ -1,26 +1,29 @@
 package atlas;
 
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
-public class FileRecord {
+public class FileRecord implements Serializable {
     
     String name;
-    Path path;
+    String path;
     long size;
-    FileTime createdAt;
-    FileTime modifiedAt;
+    long createdAt;
+    long modifiedAt;
     String extension;
 
 
     public FileRecord(Path path, BasicFileAttributes attribute) {
 
         this.name = path.getFileName().toString();
-        this.path = path;
+        this.path = path.toString();
         this.size = attribute.size();
-        this.createdAt = attribute.creationTime();
-        this.modifiedAt = attribute.lastModifiedTime();
+        this.createdAt = attribute.creationTime().toMillis();
+        this.modifiedAt = attribute.lastModifiedTime().toMillis();
         this.extension = getExtension(this.name);
     
     }
@@ -45,8 +48,11 @@ public class FileRecord {
         builder.append("name       : " + file.name + "\n");
         builder.append("path       : " + file.path + "\n");
         builder.append("size       : " + file.size + "\n");
-        builder.append("createdAt  : " + file.createdAt + "\n");
-        builder.append("modifiedAt : " + file.modifiedAt + "\n");
+        DateTimeFormatter formatter = 
+            DateTimeFormatter.ofPattern("h:mm a, d MMMM yyyy")
+                .withZone(ZoneId.systemDefault());
+        builder.append("createdAt  : " + formatter.format(Instant.ofEpochMilli(file.createdAt)) + "\n");
+        builder.append("modifiedAt : " + formatter.format(Instant.ofEpochMilli(file.modifiedAt)) + "\n");
         builder.append("extension  : " + file.extension + "\n");
         builder.append("}\n");
         
