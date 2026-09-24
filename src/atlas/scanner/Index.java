@@ -2,6 +2,7 @@ package atlas.scanner;
 
 import java.util.ArrayList;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 
 import atlas.FileRecord;
 
@@ -10,21 +11,22 @@ public class Index {
     public ArrayList<FileRecord> fileList = new ArrayList<>();
     public ArrayList<Path> folderList = new ArrayList<>();
 
+    public int filesIndexed;
+    public int foldersIndexed;
+    public int skippedItems;
+
+    public LocalDateTime modifiedAt;
+
 
     void addFile(FileRecord fileRecord) {
 
-        this.fileList.add(fileRecord);
+        fileList.add(fileRecord);
 
     }
 
     void addFolder(Path folder) {
-        // System.out.println("entered addfoldeR:");
-        // System.out.println("start folder: " + folder);
-        // System.out.println("start folderList: " + folderList);
+
         folderList.add(folder);
-        // this.folderList.add(folder);
-        // System.out.println("folderList: " + folderList);
-        // System.out.println("exiitng addoflder");
 
     }
 

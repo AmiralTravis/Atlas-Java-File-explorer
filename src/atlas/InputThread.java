@@ -21,7 +21,7 @@ class InputThread implements Runnable {
 
             String input = scanner.nextLine();
 
-            System.out.println("\n=======================================");
+            System.out.println("\n=======================================\n");
 
             try {
             

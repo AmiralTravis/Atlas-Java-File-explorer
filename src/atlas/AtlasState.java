@@ -14,6 +14,8 @@ public class AtlasState {
     public enum State {
         MAIN_MENU,
         SCANNING,
+        INDEX_MENU,
+        BROWSE_MENU,
         EXITING
     }
 

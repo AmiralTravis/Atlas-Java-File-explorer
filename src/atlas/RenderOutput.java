@@ -12,7 +12,7 @@ public class RenderOutput {
             System.out.println("\nScan result :-");
             System.out.println("Files found: " + scanResult.getFilesFound());
             System.out.println("Folders found: " + scanResult.getFoldersFound());
-            System.out.println("Skipped: " + scanResult.getSkippedFound());
+            System.out.println("Skipped: " + scanResult.getSkippedFound() + "\n");
 
         }
         
