@@ -13,32 +13,80 @@ class AtlasMenu {
 
         if (phase.equals(AtlasState.State.MAIN_MENU)) {
         
-            message = """
+            // message = """
 
+            //         ===============MAIN MENU===============
+
+            //         Current path: """+ state.currentPath +"""
+
+
+            //         Menu Options: 
+                    
+            //         show root
+            //         show current
+            //         open {name}
+            //         parent dir
+            //         scan
+            //         exit
+
+            //         Enter command:
+            //         """;
+
+            message = """
                     ===============MAIN MENU===============
 
-                    Current path: """+ state.currentPath +"""
+                    Select mode:
 
-
-                    Menu Options: 
+                    browse
+                    index
                     
-                    show root
-                    show current
-                    open {name}
-                    parent dir
-                    scan
-                    exit
-
                     Enter command:
                     """;
             
             return message;
         }
 
+        else if (phase.equals(AtlasState.State.BROWSE_MENU)) {
+
+            message = """
+                    ==============BROWSE MENU==============
+                    
+                    Current path: """+ state.currentPath +"""
+
+
+                    Menu Options:
+
+                    show current
+                    open {name}
+                    parent dir
+                    main menu
+
+                    Enter command: 
+                    """;
+
+            return message;
+
+        }
+
+        else if (phase.equals(AtlasState.State.INDEX_MENU)) {
+
+            message = """
+                    ==============INDEX MENU===============
+
+                    update index
+                    about index
+                    main menu
+
+                    Enter command:
+                    """;
+
+            return message;
+
+        }
+
         else if (phase.equals(AtlasState.State.SCANNING)) {
             
             message = """
-                    
                     ---------------------------------------
                     Scanning...
                     ---------------------------------------

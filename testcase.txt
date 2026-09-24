@@ -1,33 +1,31 @@
-===10:55am 17-9-2026===
+===12:21pm 24-9-2026===
 ===final test case before commit===
 ===case description : {
-    working perfectly fine, back to intended logic of from commit "Fix ux issues" to 
-    commit "Reorder functions for modularity", but without bad ux due to ai slop code, 
-    fully rewritten the whole code on our own, by studying and learning about new concepts, 
-    none ai code involved in this commit, with a result of perfect test case. huge milestone!
+    restructured the menu interface, added more currentStates, i.e. INDEX_MENU & BROWSE_MENU,
+    SCANNING is still its own state, own original logic, etc, its semantically "the process of
+    indexing" now... this restructure in menu interface was done to clean up cluttrered commands
+    all in one place, and keeping in mind, tht later, Atlas will evolve into three modes app, i.e.
+    indexing, searching, and browsing. and each mode shall have its own commands, mostly independent
+    of each other, hence, interface separation that way, would add a lot of clarity and improve
+    ux i think. other things like, about index command, fixing of new lines, etc. was done. 
 }===
 
 
 ===Test : {
 
-Welcome to Atlas File System!
+
+Welcome to Atlas File Search & Management Application!
 
 ===============MAIN MENU===============
 
-Current path:\users\asbia\downloads
+Select mode:
 
-Menu Options:
-
-show root
-show current
-open {name}
-parent dir
-scan
-exit
+browse
+index
 
 Enter command:
 
-progress
+browsE
 
 =======================================
 
@@ -35,37 +33,27 @@ Invalid command, please try again.
 
 ===============MAIN MENU===============
 
-Current path:\users\asbia\downloads
+Select mode:
 
-Menu Options:
-
-show root
-show current
-open {name}
-parent dir
-scan
-exit
+browse
+index
 
 Enter command:
 
-cancel
+browse
 
 =======================================
 
-Invalid command, please try again.
-
-===============MAIN MENU===============
+==============BROWSE MENU==============
 
 Current path:\users\asbia\downloads
 
 Menu Options:
 
-show root
 show current
 open {name}
 parent dir
-scan
-exit
+main menu
 
 Enter command:
 
@@ -73,18 +61,16 @@ parent dir
 
 =======================================
 
-===============MAIN MENU===============
+==============BROWSE MENU==============
 
 Current path:\users\asbia
 
 Menu Options:
 
-show root
 show current
 open {name}
 parent dir
-scan
-exit
+main menu
 
 Enter command:
 
@@ -92,43 +78,59 @@ open downloads
 
 =======================================
 
-===============MAIN MENU===============
+==============BROWSE MENU==============
 
 Current path:\users\asbia\downloads
 
 Menu Options:
 
-show root
 show current
 open {name}
 parent dir
-scan
-exit
+main menu
 
 Enter command:
 
-open downloads
+main menu
 
 =======================================
 
-This item doesn't exist in this directory.
-
 ===============MAIN MENU===============
 
-Current path:\users\asbia\downloads
+Select mode:
 
-Menu Options:
-
-show root
-show current
-open {name}
-parent dir
-scan
-exit
+browse
+index
 
 Enter command:
 
-scan
+index
+
+=======================================
+
+==============INDEX MENU===============
+
+update index
+about index
+main menu
+
+Enter command:
+
+about index
+
+=======================================
+
+No Index exists. Please build an index to view about index.
+
+==============INDEX MENU===============
+
+update index
+about index
+main menu
+
+Enter command:
+
+update index
 
 =======================================
 
@@ -148,12 +150,12 @@ Enter command:
 progress
 
 =======================================
+
 
 Scan Progress result :-
-Files Found:137361
-Folders Found:16584
+Files Found:47896
+Folders Found:4255
 Skipped:0
-
 ---------------------------------------
 Scanning...
 ---------------------------------------
@@ -167,135 +169,137 @@ cancel
 
 Enter command:
 
+progress
 
+=======================================
+
+
+Scan Progress result :-
+Files Found:163631
+Folders Found:19159
+Skipped:0
+---------------------------------------
+Scanning...
+---------------------------------------
+
+==============SCANNER MENU=============
+
+Menu Options:
+
+progress
+cancel
+
+Enter command:
+
+progress
 Scanning Finished!
 
 Scan result :-
-Files found: 360100
-Folders found: 38726
+Files found: 360153
+Folders found: 38764
 Skipped: 0
 
+==============INDEX MENU===============
+
+update index
+about index
+main menu
+
+Enter command:
+
+main menu  
+
+=======================================
+
 ===============MAIN MENU===============
+
+Select mode:
+
+browse
+index
+
+Enter command:
+
+browse
+
+=======================================
+
+==============BROWSE MENU==============
 
 Current path:\users\asbia\downloads
 
 Menu Options:
 
-show root
 show current
 open {name}
 parent dir
-scan
-exit
+main menu
 
 Enter command:
 
-scan
+main menu
 
 =======================================
-
----------------------------------------
-Scanning...
----------------------------------------
-
-==============SCANNER MENU=============
-
-Menu Options:
-
-progress
-cancel
-
-Enter command:
-
-cancel
-
-=======================================
-
-Cancel scan requested...
-Cancelling scan...
-
-Scan cancelled successfully!
-
 
 ===============MAIN MENU===============
 
-Current path:\users\asbia\downloads
+Select mode:
 
-Menu Options:
-
-show root
-show current
-open {name}
-parent dir
-scan
-exit
+browse
+index
 
 Enter command:
 
-cancel
+index
 
 =======================================
 
-Invalid command, please try again.
+==============INDEX MENU===============
+
+update index
+about index
+main menu
+
+Enter command:
+
+about index
+
+=======================================
+
+
+About Index: 
+
+Indexed files: 360153
+Indexed folders: 38764
+Skipped items: 0
+Last updated: 12:17 pm, 24 September 2026
+
+==============INDEX MENU===============
+
+update index
+about index
+main menu
+
+Enter command:
+
+main menu
+
+=======================================
 
 ===============MAIN MENU===============
 
-Current path:\users\asbia\downloads
+Select mode:
 
-Menu Options:
-
-show root
-show current
-open {name}
-parent dir
-scan
-exit
-
-Enter command:
-
-scan
-
-=======================================
-
----------------------------------------
-Scanning...
----------------------------------------
-
-==============SCANNER MENU=============
-
-Menu Options:
-
-progress
-cancel
-
-Enter command:
-
-
-Scanning Finished!
-
-Scan result :-
-Files found: 360100
-Folders found: 38726
-Skipped: 0
-
-===============MAIN MENU===============
-
-Current path:\users\asbia\downloads
-
-Menu Options:
-
-show root
-show current
-open {name}
-parent dir
-scan
-exit
+browse
+index
 
 Enter command:
 
 exit
 
 =======================================
+
+Exiting application...
 
 }===
 

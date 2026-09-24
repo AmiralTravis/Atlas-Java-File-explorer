@@ -9,7 +9,7 @@ class Atlas {
 
     public static void main(String[] args) {
         
-        System.out.println("\nWelcome to Atlas File System!");
+        System.out.println("\nWelcome to Atlas File Search & Management Application!\n");
 
         AtlasState state = new AtlasState();
 
@@ -29,7 +29,7 @@ class Atlas {
 
 
             if (state.currentState.equals(AtlasState.State.EXITING)) {
-                System.out.println("\nExiting application...");
+                System.out.println("Exiting application...\n");
                 System.exit(0);
             }
             
@@ -58,7 +58,7 @@ class Atlas {
                 String result = CommandOps.handleCommand(command, state, executor);
 
                 if (result.equals("invalid command")) {
-                    System.out.println("\nInvalid command, please try again.");
+                    System.out.println("Invalid command, please try again.\n");
                 }
 
             }
@@ -67,20 +67,27 @@ class Atlas {
 
                 RenderOutput.renderResult(item);
 
-                System.out.println("\n====================================\n");
-                System.out.println("AtlasIndex:");
-                System.out.println("fileList: [" );
-                Index.showFileRecords(state.atlasIndex.fileList);
-                System.out.println("]");
-                System.out.println("\n====================================\n");
-                System.out.println("folderList: " + state.atlasIndex.folderList);
-                System.out.println("\n====================================\n");
+                // System.out.println("\n====================================\n");
+                // System.out.println("AtlasIndex:");
+                // System.out.println("fileList: [" );
+                // Index.showFileRecords(state.atlasIndex.fileList);
+                // System.out.println("]");
+                // System.out.println("\n====================================\n");
+                // System.out.println("folderList: " + state.atlasIndex.folderList);
+                // System.out.println("\n====================================\n");
 
+                if (state.currentState.equals(AtlasState.State.SCANNING)) {
+                    
+                    state.currentState = AtlasState.State.INDEX_MENU;
+                    state.currentScanPath = null;
+                    state.currentScanResult = null;
+                    state.scanFuture = null;
+                
+                }
 
-                state.currentState = AtlasState.State.MAIN_MENU;
-                state.currentScanPath = null;
-                state.currentScanResult = null;
-                state.scanFuture = null;
+                else {
+                    state.currentState = AtlasState.State.MAIN_MENU;
+                }
 
             }
             

@@ -9,52 +9,6 @@ public class DirectoryBrowser {
 
     
 
-    
-    /*
-     * ============================================================
-     * ROOT
-     * ============================================================
-     */
-    static void showRoot() {
-
-        File directory =
-            new File("\\");
-
-        File[] items =
-            directory.listFiles();
-
-
-        if (items == null) {
-
-            System.out.println(
-                "\nUnable to access root directory."
-            );
-
-            return;
-        }
-
-
-        for (File item : items) {
-
-            if (item.isFile()) {
-
-                System.out.println(
-                    item.getName()
-                );
-            }
-
-            else if (item.isDirectory()) {
-
-                System.out.println(
-                    "\\" +
-                    item.getName()
-                );
-            }
-        }
-    }
-
-
-
     /*
      * ============================================================
      * CURRENT DIRECTORY
@@ -121,7 +75,7 @@ public class DirectoryBrowser {
 
         if (!item.exists()) {
 
-            System.out.println("\nThis item doesn't exist in this directory.");
+            System.out.println("This item doesn't exist in this directory.\n");
 
             return "";
         }
@@ -181,7 +135,7 @@ public class DirectoryBrowser {
 
         else {
 
-            System.out.println("\nAlready at root dir!");
+            System.out.println("Already at root dir!\n");
             return "";
 
         }

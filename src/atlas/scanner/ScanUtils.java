@@ -1,6 +1,9 @@
 package atlas.scanner;
 
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import atlas.AtlasState;
 
 public class ScanUtils {
@@ -27,6 +30,13 @@ public class ScanUtils {
             state.atlasIndex 
         );
 
+        state.atlasIndex.filesIndexed = result.getFilesFound();
+        state.atlasIndex.foldersIndexed = result.getFoldersFound();
+        state.atlasIndex.skippedItems = result.getSkippedFound();
+        
+        LocalDateTime modifiedTime = LocalDateTime.now();
+        state.atlasIndex.modifiedAt = modifiedTime;
+
         try {
 
             state.actionQueue.put(result);
@@ -49,8 +59,8 @@ public class ScanUtils {
         AtlasState state
     ) {
 
-        System.out.println("\nCancel scan requested...");
-        System.out.println("Cancelling scan...");
+        System.out.println("Cancel scan requested...");
+        System.out.println("Cancelling scan...\n");
 
         boolean cancelled = state.scanFuture.cancel(true);
         
@@ -65,6 +75,7 @@ public class ScanUtils {
                             Folders Found: """ + state.currentScanResult.getFoldersFound() + """
 
                             Skipped: """ + state.currentScanResult.getSkippedFound() + """
+
                             """;            
             
             System.out.println(message);
@@ -78,7 +89,7 @@ public class ScanUtils {
         }
 
         else {
-            System.out.println("Scan could not be cancelled, please try again.");
+            System.out.println("Scan could not be cancelled, please try again.\n");
         }
         
 
@@ -87,7 +98,7 @@ public class ScanUtils {
 
     /*
      * ============================================================
-     * PROGRESS
+     * PROGRESS SCAN
      * ============================================================
      */
     public static void showProgress(
@@ -120,4 +131,26 @@ public class ScanUtils {
     }
 
 
+    /*
+     * ============================================================
+     * UTIL METHODS
+     * ============================================================
+     */
+    public static void aboutIndex(AtlasState state) {
+
+        if (state.atlasIndex == null) {
+
+            System.out.println("No Index exists. Please build an index to view about index.\n");
+            return;
+        
+        }
+
+        System.out.println("About Index: ");
+        System.out.println("\nIndexed files: " + state.atlasIndex.filesIndexed);
+        System.out.println("Indexed folders: " + state.atlasIndex.foldersIndexed);
+        System.out.println("Skipped items: " + state.atlasIndex.skippedItems);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a, d MMMM yyyy");
+        System.out.println("Last updated: " + state.atlasIndex.modifiedAt.format(formatter) + "\n");
+        
+    }
 }
