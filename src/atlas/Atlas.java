@@ -1,8 +1,12 @@
 package atlas;
 
+import java.nio.file.Path;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import atlas.scanner.IndexStore;
 import atlas.scanner.Index;
 
 class Atlas {
@@ -11,7 +15,31 @@ class Atlas {
         
         System.out.println("\nWelcome to Atlas File Search & Management Application!\n");
 
+        // System.out.println(
+        //     Path.of("").toAbsolutePath()
+        // );
+
+        Path indexFile = Path.of("atlas.index");
+        
         AtlasState state = new AtlasState();
+
+        if (Files.exists(indexFile)) {
+
+            try {
+
+                Index atlasIndex = IndexStore.readIndex(indexFile);
+                state = new AtlasState(atlasIndex);
+
+            } catch (IOException | ClassNotFoundException e) {
+
+                System.err.println("Unable to load index file");
+                e.printStackTrace();
+
+                state = new AtlasState();
+
+            }
+
+        }
 
 
 
