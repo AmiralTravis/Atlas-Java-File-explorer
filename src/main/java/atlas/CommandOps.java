@@ -15,19 +15,6 @@ public class CommandOps {
         "update index", "delete index", "index menu", "full rescan", "use usn"
     );
     static Set<String> isThreadOp = Set.of("create index");
-    
-    // Set<String> isMainMenuCommand = Set.of("show current", "parent dir", "scan");
-    
-    // static Set<String> isMainMenuCommand = Set.of("browse", "index");
-    // static Set<String> isIndexMenuCommand = Set.of(
-    //     "update index", "about index", "main menu",
-    //     "create index", "delete index", "index menu", "full rescan", "use usn"
-    // );
-    // static Set<String> isBrowseMenuCommand = Set.of("show current", "parent dir", "main menu");
-    
-    // static Set<String> isScanMenuCommand = Set.of("progress", "cancel");
-    static Set<String> isConfirmationMenuCommand = Set.of("proceed", "cancel");
-
 
     static String handleCommand(String command, AtlasState state, ExecutorService executor) {
 

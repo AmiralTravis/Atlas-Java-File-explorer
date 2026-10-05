@@ -1,18 +1,278 @@
-===2:25am 25-9-2026===
+===9:38pm 5-10-2026===
 ===final test case before commit===
 ===case description : {
-    added file saving on disk to persist atlas index through app lifecycles, implemented using 
-    io streams api, first test builds and writes the index on disk, second test reads the saved
-    atlas.index binary file from current working directory... and hence about index works without
-    building a new index from scratch on a fresh app lifecycle... also changed some fields in Index
-    , FileRecord, etc. to make them serializable, etc.
+    tested the new index menus
 }===
 
 
-===Test : [{
-
-
+===Test : [
 Welcome to Atlas File Search & Management Application!
+
+===============MAIN MENU===============
+
+Select mode:
+
+browse
+index
+
+Enter command:
+
+index       
+
+=======================================
+
+==============INDEX MENU===============
+
+update index
+about index
+delete index
+main menu
+
+Enter command:
+
+update index
+
+=======================================
+
+==============UPDATE INDEX MENU===============
+
+full rescan
+use usn
+index menu
+main menu
+
+Enter command:
+
+full rescann
+
+=======================================
+
+Invalid command, please try again.
+
+==============UPDATE INDEX MENU===============
+
+full rescan
+use usn
+index menu
+main menu
+
+Enter command:
+
+full rescan 
+
+=======================================
+
+==============RESCAN INDEX MENU===============
+Are you sure you want a full rescan?
+This will delete the current index and build index from scratch.
+You will lose x bytes worth of current index data.
+This action can not be undone.
+
+proceed
+cancel
+
+Enter command:
+
+cancel
+
+=======================================
+
+==============UPDATE INDEX MENU===============
+
+full rescan
+use usn
+index menu
+main menu
+
+Enter command:
+
+full rescan
+
+=======================================
+
+==============RESCAN INDEX MENU===============
+Are you sure you want a full rescan?
+This will delete the current index and build index from scratch.
+You will lose x bytes worth of current index data.
+This action can not be undone.
+
+proceed
+cancel
+
+Enter command:
+
+proceed
+
+=======================================
+
+dummy rescan logic....
+==============INDEX MENU===============
+
+update index
+about index
+delete index
+main menu
+
+Enter command:
+
+full rescan
+
+=======================================
+
+Invalid command, please try again.
+
+==============INDEX MENU===============
+
+update index
+about index
+delete index
+main menu
+
+Enter command:
+
+delete index
+
+=======================================
+
+==============DELETE INDEX MENU===============
+Are you sure you want to delete index?
+You will lose x bytes worth of current indexed data.
+This action can not be undone.
+
+proceed
+cancel
+
+Enter command:
+
+cancel
+
+=======================================
+
+==============INDEX MENU===============
+
+update index
+about index
+delete index
+main menu
+
+Enter command:
+
+about index
+
+=======================================
+
+About Index: 
+
+Indexed files: 2
+Indexed folders: 2
+Skipped items: 0
+Last updated: 1:36 am, 25 September 2026
+
+==============INDEX MENU===============
+
+update index
+about index
+delete index
+main menu
+
+Enter command:
+
+update index
+
+=======================================
+
+==============UPDATE INDEX MENU===============
+
+full rescan
+use usn
+index menu
+main menu
+
+Enter command:
+
+use usn
+
+=======================================
+
+Dummy usn logic done...
+==============INDEX MENU===============
+
+update index
+about index
+delete index
+main menu
+
+Enter command:
+
+main menu
+
+=======================================
+
+===============MAIN MENU===============
+
+Select mode:
+
+browse
+index
+
+Enter command:
+
+browse
+
+=======================================
+
+==============BROWSE MENU==============
+
+Current path:\users\asbia\downloads\mealzz
+
+Menu Options:
+
+show current
+open {name}
+parent dir
+main menu
+
+Enter command:
+
+parent dir
+
+=======================================
+
+==============BROWSE MENU==============
+
+Current path:\users\asbia\downloads
+
+Menu Options:
+
+show current
+open {name}
+parent dir
+main menu
+
+Enter command:
+
+index
+
+=======================================
+
+Invalid command, please try again.
+
+==============BROWSE MENU==============
+
+Current path:\users\asbia\downloads
+
+Menu Options:
+
+show current
+open {name}
+parent dir
+main menu
+
+Enter command:
+
+main menu
+
+=======================================
 
 ===============MAIN MENU===============
 
@@ -31,70 +291,65 @@ index
 
 update index
 about index
+delete index
 main menu
 
 Enter command:
 
-about index
+delete index
 
 =======================================
 
-No Index exists. Please build an index to view about index.
+==============DELETE INDEX MENU===============
+Are you sure you want to delete index?
+You will lose x bytes worth of current indexed data.
+This action can not be undone.
 
-==============INDEX MENU===============
-
-update index
-about index
-main menu
-
-Enter command:
-
-update index
-
-=======================================
-
----------------------------------------
-Scanning...
----------------------------------------
-
-==============SCANNER MENU=============
-
-Menu Options:
-
-progress
+proceed
 cancel
 
 Enter command:
 
+proceed
 
-Scanning Finished!
+=======================================
 
-Scan result :-
-Files found: 2
-Folders found: 2
-Skipped: 0
-
+dummy delete index logic...
 ==============INDEX MENU===============
 
 update index
 about index
+delete index
 main menu
 
 Enter command:
 
-about index
+main menu
 
 =======================================
 
-About Index: 
+===============MAIN MENU===============
 
-Indexed files: 2
-Indexed folders: 2
-Last updated: 1:36 am, 25 September 2026
+Select mode:
 
+browse
+index
 
-update index
-about index
+Enter command:
+
+browse
+
+=======================================
+
+==============BROWSE MENU==============
+
+Current path:\users\asbia\downloads
+
+Menu Options:
+
+show current
+open {name}
+parent dir
 main menu
 
 Enter command:
@@ -104,10 +359,5 @@ exit
 =======================================
 
 Exiting application...
-
-},
-{
-
-}
 ]===
 
