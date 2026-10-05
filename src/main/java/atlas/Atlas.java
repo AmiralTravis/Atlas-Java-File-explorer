@@ -95,18 +95,8 @@ class Atlas {
 
                 RenderOutput.renderResult(item);
 
-                // System.out.println("\n====================================\n");
-                // System.out.println("AtlasIndex:");
-                // System.out.println("fileList: [" );
-                // Index.showFileRecords(state.atlasIndex.fileList);
-                // System.out.println("]");
-                // System.out.println("\n====================================\n");
-                // System.out.println("folderList: " + state.atlasIndex.folderList);
-                // System.out.println("\n====================================\n");
-
                 if (state.currentState.equals(AtlasState.AppState.SCANNING)) {
                     
-                    // state.currentState = AtlasState.AppState.INDEX_MENU;
                     ChangeMode.indexMode(state);
                     state.currentScanPath = null;
                     state.currentScanResult = null;
