@@ -2,10 +2,13 @@ package atlas.scanner;
 
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import atlas.AtlasState;
+import atlas.ChangeMode;
 
 public class ScanUtils {
     
@@ -40,7 +43,9 @@ public class ScanUtils {
 
         try {
     
-            IndexStore.writeIndex(state.atlasIndex);
+            Path indexPath = state.indexPath;
+            
+            IndexStore.writeIndex(state.atlasIndex, indexPath);
 
         } catch (IOException e) {
 
@@ -93,7 +98,7 @@ public class ScanUtils {
             System.out.println(message);
             
             
-            state.currentState = AtlasState.State.MAIN_MENU;
+            state.currentState = AtlasState.AppState.MAIN_MENU;
             state.currentScanPath = null;
             state.currentScanResult = null;
             state.scanFuture = null;
@@ -119,7 +124,7 @@ public class ScanUtils {
 
         String message;
 
-        if (state.currentState == AtlasState.State.SCANNING) {
+        if (state.currentState == AtlasState.AppState.SCANNING) {
 
             message = """
                     
@@ -165,4 +170,35 @@ public class ScanUtils {
         System.out.println("Last updated: " + state.atlasIndex.modifiedAt.format(formatter) + "\n");
         
     }
+
+
+    public static boolean indexExists(AtlasState state) {
+
+        return Files.exists(state.indexPath);
+    
+    }
+
+
+
+
+    // NON SCANNING HELPER, INDEX RELATED UTILS 
+    // -- SHALL MAKE A NEW FOLDER OR FILE IF THIS SECTION GROWS IN FUTURE
+
+    public static void updateIndexByUsnJournal(AtlasState state) {
+
+        System.out.println("Dummy usn logic done...");
+        ChangeMode.indexMode(state);
+
+    }
+
+    public static void runDeleteIndex(AtlasState state) {
+        System.out.println("dummy delete index logic...");
+        ChangeMode.indexMode(state);
+    }
+
+    public static void runReScan(AtlasState state) {
+        System.out.println("dummy rescan logic....");
+        ChangeMode.indexMode(state);
+    }
+
 }

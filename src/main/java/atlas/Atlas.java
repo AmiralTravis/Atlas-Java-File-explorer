@@ -18,16 +18,16 @@ class Atlas {
         // System.out.println(
         //     Path.of("").toAbsolutePath()
         // );
-
-        Path indexFile = Path.of("atlas.index");
         
         AtlasState state = new AtlasState();
 
-        if (Files.exists(indexFile)) {
+        Path indexPath = state.indexPath;
+
+        if (Files.exists(indexPath)) {
 
             try {
 
-                Index atlasIndex = IndexStore.readIndex(indexFile);
+                Index atlasIndex = IndexStore.readIndex(indexPath);
                 state = new AtlasState(atlasIndex);
 
             } catch (IOException | ClassNotFoundException e) {
@@ -56,7 +56,7 @@ class Atlas {
         while (true) {
 
 
-            if (state.currentState.equals(AtlasState.State.EXITING)) {
+            if (state.currentState.equals(AtlasState.AppState.EXITING)) {
                 System.out.println("Exiting application...\n");
                 System.exit(0);
             }
@@ -104,9 +104,10 @@ class Atlas {
                 // System.out.println("folderList: " + state.atlasIndex.folderList);
                 // System.out.println("\n====================================\n");
 
-                if (state.currentState.equals(AtlasState.State.SCANNING)) {
+                if (state.currentState.equals(AtlasState.AppState.SCANNING)) {
                     
-                    state.currentState = AtlasState.State.INDEX_MENU;
+                    // state.currentState = AtlasState.AppState.INDEX_MENU;
+                    ChangeMode.indexMode(state);
                     state.currentScanPath = null;
                     state.currentScanResult = null;
                     state.scanFuture = null;
@@ -114,7 +115,7 @@ class Atlas {
                 }
 
                 else {
-                    state.currentState = AtlasState.State.MAIN_MENU;
+                    state.currentState = AtlasState.AppState.MAIN_MENU;
                 }
 
             }

@@ -16,10 +16,9 @@ import java.io.IOException;
 
 public class IndexStore {
     
-    static void writeIndex(Index atlasIndex) throws IOException {
+    static void writeIndex(Index atlasIndex, Path indexPath) throws IOException {
 
         Path tempFile = Path.of("atlas.index.tmp");
-        Path indexFile = Path.of("atlas.index");
 
         try {
 
@@ -38,7 +37,7 @@ public class IndexStore {
                 
             }
 
-            Files.move(tempFile, indexFile, StandardCopyOption.REPLACE_EXISTING);
+            Files.move(tempFile, indexPath, StandardCopyOption.REPLACE_EXISTING);
 
 
         } catch (IOException e) {
@@ -51,11 +50,11 @@ public class IndexStore {
 
     }
 
-    public static Index readIndex(Path indexFile) 
+    public static Index readIndex(Path indexPath) 
             throws IOException, ClassNotFoundException {
 
         try (
-            InputStream in = new FileInputStream(indexFile.toString());
+            InputStream in = new FileInputStream(indexPath.toString());
             DataInputStream data = new DataInputStream(in);
         ) {
 
