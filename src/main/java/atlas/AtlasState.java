@@ -1,5 +1,7 @@
 package atlas;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -11,7 +13,7 @@ import atlas.scanner.Index;
 
 public class AtlasState {
 
-    public enum State {
+    public enum AppState {
         MAIN_MENU,
         SCANNING,
         INDEX_MENU,
@@ -19,7 +21,21 @@ public class AtlasState {
         EXITING
     }
 
-    public State currentState = State.MAIN_MENU;
+    public enum IndexMenuState {
+        NO_INDEX,
+        WITH_INDEX,
+        UPDATE_INDEX
+    }
+
+    public enum ConfirmationMenuState {
+        NONE,
+        DELETE_INDEX,
+        RESCAN
+    }
+
+    public AppState currentState = AppState.MAIN_MENU;
+    public IndexMenuState indexState = IndexMenuState.NO_INDEX;
+    public ConfirmationMenuState confState = ConfirmationMenuState.NONE; 
 
     public BlockingQueue<QueueItem> actionQueue = new LinkedBlockingQueue<>();
 
@@ -41,7 +57,9 @@ public class AtlasState {
         this.atlasIndex = atlasIndex;
     }
 
+    public final Path indexPath = Paths.get("atlas.index");
 
+    public ArrayList<String> currentCommands = new ArrayList<>(List.of("exit"));
 
 }
 

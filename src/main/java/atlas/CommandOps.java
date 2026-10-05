@@ -9,66 +9,67 @@ import atlas.scanner.ScanUtils;
 public class CommandOps {
 
 
+    static Set<String> isNonThreadOp = Set.of(
+        "show current", "parent dir", "progress", "cancel", "browse", "index",
+        "about index", "main menu", 
+        "update index", "delete index", "index menu", "full rescan", "use usn"
+    );
+    static Set<String> isThreadOp = Set.of("create index");
+    
+    // Set<String> isMainMenuCommand = Set.of("show current", "parent dir", "scan");
+    
+    // static Set<String> isMainMenuCommand = Set.of("browse", "index");
+    // static Set<String> isIndexMenuCommand = Set.of(
+    //     "update index", "about index", "main menu",
+    //     "create index", "delete index", "index menu", "full rescan", "use usn"
+    // );
+    // static Set<String> isBrowseMenuCommand = Set.of("show current", "parent dir", "main menu");
+    
+    // static Set<String> isScanMenuCommand = Set.of("progress", "cancel");
+    static Set<String> isConfirmationMenuCommand = Set.of("proceed", "cancel");
+
+
     static String handleCommand(String command, AtlasState state, ExecutorService executor) {
 
-        Set<String> isNonThreadOp = Set.of(
-            "show current", "parent dir", "progress", "cancel", "browse", "index",
-            "about index", "main menu"
-        );
-        Set<String> isThreadOp = Set.of("update index");
-        // Set<String> isMainMenuCommand = Set.of("show current", "parent dir", "scan");
-        Set<String> isMainMenuCommand = Set.of("browse", "index");
-        Set<String> isIndexMenuCommand = Set.of("update index", "about index", "main menu");
-        Set<String> isBrowseMenuCommand = Set.of("show current", "parent dir", "main menu");
-        Set<String> isScanMenuCommand = Set.of("progress", "cancel");
+        if (command.equals("exit")) {
+            state.currentState = AtlasState.AppState.EXITING;
 
-        if (isNonThreadOp.contains(command) 
-            && isMainMenuCommand.contains(command) 
-            && state.currentState.equals(AtlasState.State.MAIN_MENU)
-        ) {
-            CommandOps.runNonThreadOp(command, state);
+            return "";
         }
 
-        else if (isNonThreadOp.contains(command) 
-            && isIndexMenuCommand.contains(command) 
-            && state.currentState.equals(AtlasState.State.INDEX_MENU)
-        ) {
-            CommandOps.runNonThreadOp(command, state);
-        }
-
-        else if (isNonThreadOp.contains(command) 
-            && isBrowseMenuCommand.contains(command) 
-            && state.currentState.equals(AtlasState.State.BROWSE_MENU)
-        ) {
-            CommandOps.runNonThreadOp(command, state);
-        }
-
-        else if (command.startsWith("open ")
-            && state.currentState.equals(AtlasState.State.BROWSE_MENU)
+        if (
+            command.startsWith("open ")
+            && state.currentState.equals(AtlasState.AppState.BROWSE_MENU)
         ) {
 
             String itemName = command.substring(5);
 
             DirectoryBrowser.openItem(itemName, state);
+
+            return "";
         }
 
-        else if (isNonThreadOp.contains(command) 
-            && isScanMenuCommand.contains(command) 
-            && state.currentState.equals(AtlasState.State.SCANNING)
+        if (
+            command.equals("proceed") | command.equals("cancel")
+            && !state.confState.equals(AtlasState.ConfirmationMenuState.NONE)
         ) {
-            CommandOps.runNonThreadOp(command, state);
-        }        
-
-        else if (isThreadOp.contains(command)
-            && isIndexMenuCommand.contains(command) 
-            && state.currentState.equals(AtlasState.State.INDEX_MENU)
-        ) {
-            CommandOps.runThreadOp(command, state, executor);
+            handleReconfirmation(command, state);
+            return "";
         }
 
-        else if (command.equals("exit")) {
-            state.currentState = AtlasState.State.EXITING;
+        if (!state.currentCommands.contains(command)) {
+            return "invalid command";
         }
+
+
+        if (isThreadOp.contains(command)) {
+            runThreadOp(command, state, executor);
+        }
+
+        else if (isNonThreadOp.contains(command)) {
+            runNonThreadOp(command, state);
+        }
+     
 
         else {
             return "invalid command";
@@ -79,6 +80,30 @@ public class CommandOps {
     }
 
 
+    static void handleReconfirmation(String command, AtlasState state) {
+        if (state.confState.equals(AtlasState.ConfirmationMenuState.DELETE_INDEX)) {
+            if (command.equals("proceed")) {
+                ScanUtils.runDeleteIndex(state);
+            }
+
+            else {
+                state.confState = AtlasState.ConfirmationMenuState.NONE;
+                state.indexState = AtlasState.IndexMenuState.WITH_INDEX;
+            }
+            
+        }
+
+        else if (state.confState.equals(AtlasState.ConfirmationMenuState.RESCAN)) {
+            if (command.equals("proceed")) {
+                ScanUtils.runReScan(state);
+            }
+
+            else {
+                state.confState = AtlasState.ConfirmationMenuState.NONE;
+                state.indexState = AtlasState.IndexMenuState.UPDATE_INDEX;
+            }
+        }
+    }
 
 
     
@@ -88,7 +113,7 @@ public class CommandOps {
             ChangeMode.browseMode(state);
         }
 
-        else if (command.equals("index")) {
+        else if (command.equals("index") | command.equals("index menu")) {
             ChangeMode.indexMode(state);
         }
 
@@ -122,6 +147,24 @@ public class CommandOps {
             ChangeMode.mainMenuMode(state);
         }
 
+        else if (command.equals("update index")) {
+            ChangeMode.updateIndexMode(state);
+        }
+
+        else if (command.equals("delete index")) {
+            ChangeMode.deleteIndexMode(state);
+        }
+
+
+        else if (command.equals("full rescan")) {
+            ChangeMode.fullRescanMode(state);
+        }
+
+        else if (command.equals("use usn")) {
+            ScanUtils.updateIndexByUsnJournal(state);
+        }
+
+        
 
     }
 
@@ -130,9 +173,9 @@ public class CommandOps {
 
     static void runThreadOp(String command, AtlasState state, ExecutorService executor) {
 
-        if (command.equals("update index")) {
+        if (command.equals("create index")) {
 
-            if (state.currentState.equals(AtlasState.State.SCANNING)) {
+            if (state.currentState.equals(AtlasState.AppState.SCANNING)) {
                 
                 if (state.currentScanPath != null) {
 
@@ -150,7 +193,7 @@ public class CommandOps {
 
             }
 
-            state.currentState = AtlasState.State.SCANNING;
+            state.currentState = AtlasState.AppState.SCANNING;
 
             state.scanFuture = executor.submit(() -> {
                 ScanUtils.startScan(state);;
