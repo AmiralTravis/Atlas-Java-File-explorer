@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 
 import atlas.AtlasState;
 import atlas.ChangeMode;
+import atlas.usn.UsnVolume;
 
 public class ScanUtils {
     
@@ -184,9 +185,10 @@ public class ScanUtils {
     // NON SCANNING HELPER, INDEX RELATED UTILS 
     // -- SHALL MAKE A NEW FOLDER OR FILE IF THIS SECTION GROWS IN FUTURE
 
-    public static void updateIndexByUsnJournal(AtlasState state) {
+    public static void runUsnUpdate(AtlasState state) {
 
-        System.out.println("Dummy usn logic done...");
+        // System.out.println("Dummy usn logic done...");
+        UsnVolume.updateIndexByUsnJournal();
         ChangeMode.indexMode(state);
 
     }

@@ -148,7 +148,7 @@ public class CommandOps {
         }
 
         else if (command.equals("use usn")) {
-            ScanUtils.updateIndexByUsnJournal(state);
+            ScanUtils.runUsnUpdate(state);
         }
 
         
