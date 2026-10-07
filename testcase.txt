@@ -1,11 +1,16 @@
-===9:38pm 5-10-2026===
+===5:33pm 7-10-2026===
 ===final test case before commit===
 ===case description : {
-    tested the new index menus
+    tested the first step of creating handle useing CreateFile, and closing the handle using 
+    CloseHandle... turns out we need admin permissions for make windows to allow us to do that..
+    hence there are two test cases, 1. with vs code run as admin, 2. vs code run without run as 
+    admin, we tried to handle the second situation well with a specific error handling or error 5
 }===
 
 
 ===Test : [
+{
+
 Welcome to Atlas File Search & Management Application!
 
 ===============MAIN MENU===============
@@ -17,262 +22,53 @@ index
 
 Enter command:
 
-index       
-
-=======================================
-
-==============INDEX MENU===============
-
-update index
-about index
-delete index
-main menu
-
-Enter command:
-
-update index
-
-=======================================
-
-==============UPDATE INDEX MENU===============
-
-full rescan
-use usn
-index menu
-main menu
-
-Enter command:
-
-full rescann
-
-=======================================
-
-Invalid command, please try again.
-
-==============UPDATE INDEX MENU===============
-
-full rescan
-use usn
-index menu
-main menu
-
-Enter command:
-
-full rescan 
-
-=======================================
-
-==============RESCAN INDEX MENU===============
-Are you sure you want a full rescan?
-This will delete the current index and build index from scratch.
-You will lose x bytes worth of current index data.
-This action can not be undone.
-
-proceed
-cancel
-
-Enter command:
-
-cancel
-
-=======================================
-
-==============UPDATE INDEX MENU===============
-
-full rescan
-use usn
-index menu
-main menu
-
-Enter command:
-
-full rescan
-
-=======================================
-
-==============RESCAN INDEX MENU===============
-Are you sure you want a full rescan?
-This will delete the current index and build index from scratch.
-You will lose x bytes worth of current index data.
-This action can not be undone.
-
-proceed
-cancel
-
-Enter command:
-
-proceed
-
-=======================================
-
-dummy rescan logic....
-==============INDEX MENU===============
-
-update index
-about index
-delete index
-main menu
-
-Enter command:
-
-full rescan
-
-=======================================
-
-Invalid command, please try again.
-
-==============INDEX MENU===============
-
-update index
-about index
-delete index
-main menu
-
-Enter command:
-
-delete index
-
-=======================================
-
-==============DELETE INDEX MENU===============
-Are you sure you want to delete index?
-You will lose x bytes worth of current indexed data.
-This action can not be undone.
-
-proceed
-cancel
-
-Enter command:
-
-cancel
-
-=======================================
-
-==============INDEX MENU===============
-
-update index
-about index
-delete index
-main menu
-
-Enter command:
-
-about index
-
-=======================================
-
-About Index: 
-
-Indexed files: 2
-Indexed folders: 2
-Skipped items: 0
-Last updated: 1:36 am, 25 September 2026
-
-==============INDEX MENU===============
-
-update index
-about index
-delete index
-main menu
-
-Enter command:
-
-update index
-
-=======================================
-
-==============UPDATE INDEX MENU===============
-
-full rescan
-use usn
-index menu
-main menu
-
-Enter command:
-
-use usn
-
-=======================================
-
-Dummy usn logic done...
-==============INDEX MENU===============
-
-update index
-about index
-delete index
-main menu
-
-Enter command:
-
-main menu
-
-=======================================
-
-===============MAIN MENU===============
-
-Select mode:
-
-browse
-index
-
-Enter command:
-
-browse
-
-=======================================
-
-==============BROWSE MENU==============
-
-Current path:\users\asbia\downloads\mealzz
-
-Menu Options:
-
-show current
-open {name}
-parent dir
-main menu
-
-Enter command:
-
-parent dir
-
-=======================================
-
-==============BROWSE MENU==============
-
-Current path:\users\asbia\downloads
-
-Menu Options:
-
-show current
-open {name}
-parent dir
-main menu
-
-Enter command:
-
 index
 
 =======================================
 
-Invalid command, please try again.
+==============INDEX MENU===============
 
-==============BROWSE MENU==============
-
-Current path:\users\asbia\downloads
-
-Menu Options:
-
-show current
-open {name}
-parent dir
+update index
+about index
+delete index
 main menu
 
 Enter command:
 
-main menu
+update index
 
 =======================================
+
+==============UPDATE INDEX MENU===============
+
+full rescan
+use usn
+index menu
+main menu
+
+Enter command:
+
+use usn
+
+=======================================
+
+Proceeding to open volume
+Opened handle succesfully: native@0x4f0
+Closing handle
+Closed handle successfully...
+==============INDEX MENU===============
+
+update index
+about index
+delete index
+main menu
+
+Enter command:
+
+},
+{
+
+Welcome to Atlas File Search & Management Application!
 
 ===============MAIN MENU===============
 
@@ -296,25 +92,28 @@ main menu
 
 Enter command:
 
-delete index
+update index
 
 =======================================
 
-==============DELETE INDEX MENU===============
-Are you sure you want to delete index?
-You will lose x bytes worth of current indexed data.
-This action can not be undone.
+==============UPDATE INDEX MENU===============
 
-proceed
-cancel
+full rescan
+use usn
+index menu
+main menu
 
 Enter command:
 
-proceed
+use usn
 
 =======================================
 
-dummy delete index logic...
+Proceeding to open volume
+Access denied. Please run Atlas as Administrator to use the USN Journal.
+
+Error occured while opening volume
+
 ==============INDEX MENU===============
 
 update index
@@ -324,40 +123,6 @@ main menu
 
 Enter command:
 
-main menu
-
-=======================================
-
-===============MAIN MENU===============
-
-Select mode:
-
-browse
-index
-
-Enter command:
-
-browse
-
-=======================================
-
-==============BROWSE MENU==============
-
-Current path:\users\asbia\downloads
-
-Menu Options:
-
-show current
-open {name}
-parent dir
-main menu
-
-Enter command:
-
-exit
-
-=======================================
-
-Exiting application...
+}
 ]===
 
