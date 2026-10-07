@@ -1,15 +1,23 @@
 ===5:33pm 7-10-2026===
 ===final test case before commit===
 ===case description : {
-    tested the first step of creating handle useing CreateFile, and closing the handle using 
-    CloseHandle... turns out we need admin permissions for make windows to allow us to do that..
-    hence there are two test cases, 1. with vs code run as admin, 2. vs code run without run as 
-    admin, we tried to handle the second situation well with a specific error handling or error 5
+    tested the step 2. i.e. 
+    2. Access/query the USN Journal
+    DeviceIoControl(
+        HANDLE,
+        FSCTL_QUERY_USN_JOURNAL
+    )
+            ↓
+    Journal information
+            ✅ DONE
+
+    is done successfully... currently using USN_JOURNAL_DATA_V0, will checkout v1, or v2 as 
+    required in future if we are missing any records or usn data... 
+            
 }===
 
 
 ===Test : [
-{
 
 Welcome to Atlas File Search & Management Application!
 
@@ -53,7 +61,11 @@ use usn
 =======================================
 
 Proceeding to open volume
-Opened handle succesfully: native@0x4f0
+Opened handle succesfully: native@0x4c8
+Accessing usn journal...
+Journal information received. Bytes: 56
+Journal raw data: auto-allocated@0x26ecf800370 (56 bytes)
+Accessed usn journal successfully
 Closing handle
 Closed handle successfully...
 ==============INDEX MENU===============
@@ -64,65 +76,5 @@ delete index
 main menu
 
 Enter command:
-
-},
-{
-
-Welcome to Atlas File Search & Management Application!
-
-===============MAIN MENU===============
-
-Select mode:
-
-browse
-index
-
-Enter command:
-
-index
-
-=======================================
-
-==============INDEX MENU===============
-
-update index
-about index
-delete index
-main menu
-
-Enter command:
-
-update index
-
-=======================================
-
-==============UPDATE INDEX MENU===============
-
-full rescan
-use usn
-index menu
-main menu
-
-Enter command:
-
-use usn
-
-=======================================
-
-Proceeding to open volume
-Access denied. Please run Atlas as Administrator to use the USN Journal.
-
-Error occured while opening volume
-
-==============INDEX MENU===============
-
-update index
-about index
-delete index
-main menu
-
-Enter command:
-
-}
 ]===
 
