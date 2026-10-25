@@ -6,96 +6,105 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.List;
 
 import atlas.FileRecord;
 
 public class FileScanner {
 
 
-    public static ScanResult scan(Path root, ScanResult result, Index atlasIndex) {
+    public static ScanResult scan(List<Path> paths, ScanResult result, Index atlasIndex) {
 
         try {
 
-            Files.walkFileTree(
-                root,
-                new SimpleFileVisitor<Path>() {
+            for (Path path : paths) {
 
-                    @Override
-                    public FileVisitResult preVisitDirectory(
-                        Path directory,
-                        BasicFileAttributes attributes
-                    ) {
+                atlasIndex.addDirectory(path);
+                
+                Files.walkFileTree(
+                    path,
+                    new SimpleFileVisitor<Path>() {
 
-                        if (Thread.currentThread().isInterrupted()) {
-                            return FileVisitResult.TERMINATE;
+                        @Override
+                        public FileVisitResult preVisitDirectory(
+                            Path directory,
+                            BasicFileAttributes attributes
+                        ) {
+
+                            if (Thread.currentThread().isInterrupted()) {
+                                return FileVisitResult.TERMINATE;
+                            }
+
+                            result.incrementFolders();
+
+                            // System.out.println(
+                            //     "passed result.incrementFolders"
+                            // );
+
+                            atlasIndex.addFolder(directory);
+                            // System.out.println(
+                            //     "passed atlasIndex.addFolder(directory)"
+                            // );
+
+                            return FileVisitResult.CONTINUE;
                         }
 
-                        result.incrementFolders();
+                        @Override
+                        public FileVisitResult visitFile(
+                            Path file,
+                            BasicFileAttributes attributes
+                        ) {
 
-                        // System.out.println(
-                        //     "passed result.incrementFolders"
-                        // );
+                            if (Thread.currentThread().isInterrupted()) {
+                                return FileVisitResult.TERMINATE;
+                            }
 
-                        atlasIndex.addFolder(directory);
-                        // System.out.println(
-                        //     "passed atlasIndex.addFolder(directory)"
-                        // );
+                            result.incrementFiles();
 
-                        return FileVisitResult.CONTINUE;
-                    }
+                            // System.out.println(
+                            //     "passed result.incrementFiles();"
+                            // );
 
-                    @Override
-                    public FileVisitResult visitFile(
-                        Path file,
-                        BasicFileAttributes attributes
-                    ) {
+                            FileRecord record = new FileRecord(file, attributes);
+                            // System.out.println(
+                            //     "passed FileRecord record = new FileRecord(file, attributes);"
+                            // );
 
-                        if (Thread.currentThread().isInterrupted()) {
-                            return FileVisitResult.TERMINATE;
+                            atlasIndex.addFile(record);
+                            // System.out.println(
+                            //     "passed atlasIndex.addFile(record);"
+                            // );
+
+                            return FileVisitResult.CONTINUE;
                         }
 
-                        result.incrementFiles();
+                        @Override
+                        public FileVisitResult visitFileFailed(
+                            Path file,
+                            IOException exception
+                        ) {
 
-                        // System.out.println(
-                        //     "passed result.incrementFiles();"
-                        // );
+                            System.err.println(
+                                "Could not access: "
+                                + file
+                                + " — "
+                                + exception.getMessage()
+                            );
 
-                        FileRecord record = new FileRecord(file, attributes);
-                        // System.out.println(
-                        //     "passed FileRecord record = new FileRecord(file, attributes);"
-                        // );
+                            if (Thread.currentThread().isInterrupted()) {
+                                return FileVisitResult.TERMINATE;
+                            }
 
-                        atlasIndex.addFile(record);
-                        // System.out.println(
-                        //     "passed atlasIndex.addFile(record);"
-                        // );
+                            result.incrementSkipped();
 
-                        return FileVisitResult.CONTINUE;
-                    }
-
-                    @Override
-                    public FileVisitResult visitFileFailed(
-                        Path file,
-                        IOException exception
-                    ) {
-
-                        System.err.println(
-                            "Could not access: "
-                            + file
-                            + " — "
-                            + exception.getMessage()
-                        );
-
-                        if (Thread.currentThread().isInterrupted()) {
-                            return FileVisitResult.TERMINATE;
+                            return FileVisitResult.SKIP_SUBTREE;
                         }
-
-                        result.incrementSkipped();
-
-                        return FileVisitResult.SKIP_SUBTREE;
                     }
-                }
-            );
+                );
+
+            }
+
+            
 
         } catch (IOException e) {
 

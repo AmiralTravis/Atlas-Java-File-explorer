@@ -15,6 +15,7 @@ public class AtlasState {
 
     public enum AppState {
         MAIN_MENU,
+        PRE_SCANNING,
         SCANNING,
         INDEX_MENU,
         BROWSE_MENU,
@@ -60,6 +61,8 @@ public class AtlasState {
     public final Path indexPath = Paths.get("atlas.index");
 
     public ArrayList<String> currentCommands = new ArrayList<>(List.of("exit"));
+
+    public List<Path> tempPaths = new ArrayList<Path>();
 
 }
 

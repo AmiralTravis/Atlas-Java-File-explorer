@@ -21,11 +21,22 @@ class InputThread implements Runnable {
 
                 String input = scanner.nextLine();
 
-                System.out.println("\n=======================================\n");
-
                 try {
-                
-                    state.actionQueue.put(new CommandItem(input));
+
+                    if (!input.equals("")) {
+
+                        state.actionQueue.put(new CommandItem(input));
+
+                        System.out.println("\n=======================================\n");
+                    
+                    } else {
+                    
+                        System.out.print("\033[1A"); // Move cursor up one line
+                        System.out.print("\033[2K"); // Clear that line
+
+                        continue;
+                    
+                    }
                 
                 } catch (InterruptedException e) {
                     

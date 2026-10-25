@@ -9,8 +9,9 @@ import atlas.FileRecord;
 
 public class Index implements Serializable {
 
-    public ArrayList<FileRecord> fileList = new ArrayList<>();
-    public ArrayList<String> folderList = new ArrayList<>();
+    private ArrayList<FileRecord> fileList = new ArrayList<>();
+    private ArrayList<String> folderList = new ArrayList<>();
+    private ArrayList<String> directoryList = new ArrayList<>();
 
     public int filesIndexed;
     public int foldersIndexed;
@@ -30,6 +31,22 @@ public class Index implements Serializable {
         folderList.add(folder.toString());
 
     }
+
+    void addDirectory(Path dir) {
+
+        directoryList.add(dir.toString());
+
+    }
+
+    public ArrayList<Path> getDirectoryList(Index atlasIndex) {
+        ArrayList<Path> paths = new ArrayList<>();
+
+        for (String dir : directoryList) {
+            paths.add(Path.of(dir));
+        }
+
+        return paths;
+    } 
 
     public static void showFileRecords(ArrayList<FileRecord> fileList) {
         
