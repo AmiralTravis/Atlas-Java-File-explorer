@@ -1,5 +1,8 @@
 package atlas;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
@@ -12,9 +15,10 @@ public class CommandOps {
     static Set<String> isNonThreadOp = Set.of(
         "show current", "parent dir", "progress", "cancel", "browse", "index",
         "about index", "main menu", 
-        "update index", "delete index", "index menu", "full rescan", "use usn"
+        "update index", "delete index", "index menu", "full rescan", "use usn", 
+        "create index"
     );
-    static Set<String> isThreadOp = Set.of("create index");
+    // static Set<String> isThreadOp = Set.of("create index");
 
     static String handleCommand(String command, AtlasState state, ExecutorService executor) {
 
@@ -23,6 +27,13 @@ public class CommandOps {
 
             return "";
         }
+
+        if (state.currentState.equals(AtlasState.AppState.PRE_SCANNING)) {
+            handlePreScanCommands(command, state, executor);
+
+            return "";
+        }
+
 
         if (
             command.startsWith("open ")
@@ -49,9 +60,9 @@ public class CommandOps {
         }
 
 
-        if (isThreadOp.contains(command)) {
-            runThreadOp(command, state, executor);
-        }
+        // if (isThreadOp.contains(command)) {
+        //     runThreadOp(command, state, executor);
+        // }
 
         else if (isNonThreadOp.contains(command)) {
             runNonThreadOp(command, state);
@@ -92,6 +103,57 @@ public class CommandOps {
         }
     }
 
+
+    static void handlePreScanCommands(String command, AtlasState state, ExecutorService executor) {
+
+        if (command.equals("done")) {
+
+            // start scan logic
+            runThreadOp(state, executor);
+
+            System.out.println("Saved scanner directories...");
+            System.out.println("Proceeding to scan...\n");
+
+            return;
+        
+        }
+
+        else if (command.equals("close")) {
+
+            state.tempPaths = new ArrayList<Path>();
+            ChangeMode.indexMode(state);
+
+            System.out.println("Closing scanning process...\n");
+
+            return;
+
+        }
+
+        else {
+
+            Path path = Path.of(command);
+
+            if (state.tempPaths.contains(path)) {
+                System.out.println("This directory is already added.");
+            }
+
+            else if (Files.exists(path)) {
+
+                System.out.println("empty path: " + path);
+            
+                state.tempPaths.add(path);
+                System.out.println("Added directory successfully...\n");
+            
+            } else {
+
+                System.out.println("This directory does not exist...");
+                System.out.println("Please try again with a correct directory path\n");
+
+            }
+
+        }
+
+    }
 
     
     static void runNonThreadOp(String command, AtlasState state) {
@@ -151,6 +213,13 @@ public class CommandOps {
             ScanUtils.runUsnUpdate(state);
         }
 
+        else if (command.equals("create index")) {
+
+            ChangeMode.preScanMode(state);                      
+            
+        }
+    
+
         
 
     }
@@ -158,38 +227,22 @@ public class CommandOps {
 
 
 
-    static void runThreadOp(String command, AtlasState state, ExecutorService executor) {
+    public static void runThreadOp(AtlasState state, ExecutorService executor) {
 
-        if (command.equals("create index")) {
+        if (state.currentState.equals(AtlasState.AppState.PRE_SCANNING)) {
 
-            if (state.currentState.equals(AtlasState.AppState.SCANNING)) {
-                
-                if (state.currentScanPath != null) {
-
-                    System.out.println("Already scanning at: " + state.currentScanPath 
-                    + "\nTry again after the scan is done.\n");
-                    
-                }
-
-                else {
-                    System.out.println("Already scanning something.");
-                    System.out.println("Try again after the scan is done.\n");
-                }
-
-                return;
-
-            }
-
-            state.currentState = AtlasState.AppState.SCANNING;
+            ChangeMode.scanMode(state);
 
             state.scanFuture = executor.submit(() -> {
-                ScanUtils.startScan(state);;
+                ScanUtils.startScan(state);
             });
 
 
                         
             
         }
+    
+    
     }
 
 

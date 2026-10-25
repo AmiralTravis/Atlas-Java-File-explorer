@@ -1,24 +1,20 @@
-===5:33pm 7-10-2026===
+===8:09pm 25-10-2026===
 ===final test case before commit===
 ===case description : {
-    tested the step 2. i.e. 
-    2. Access/query the USN Journal
-    DeviceIoControl(
-        HANDLE,
-        FSCTL_QUERY_USN_JOURNAL
-    )
-            ↓
-    Journal information
-            ✅ DONE
+    put usn development on hold... realised we need to first make a index system that consists of
+    only selected dirs and files... so tht many other, cache files and such, shouldnt be tracked
+    on usn update, which are huge number of unecessary files to be tracking for updation, or even
+    first creation/scanning of index.
+    hence developed selecting what dirs to consider when creating first index -feature
+    usn updation logic development hopefully will followed by this
 
-    is done successfully... currently using USN_JOURNAL_DATA_V0, will checkout v1, or v2 as 
-    required in future if we are missing any records or usn data... 
-            
+    also, added moving up a line, and deletion of newline whenever empty newline is entered in 
+    input thread in cli... etc
 }===
 
 
 ===Test : [
-
+    
 Welcome to Atlas File Search & Management Application!
 
 ===============MAIN MENU===============
@@ -36,38 +32,156 @@ index
 
 ==============INDEX MENU===============
 
-update index
+create index
 about index
-delete index
 main menu
 
 Enter command:
 
-update index
+about index
 
 =======================================
 
-==============UPDATE INDEX MENU===============
+No Index exists. Please build a new index to view about index.
 
-full rescan
-use usn
-index menu
+==============INDEX MENU===============
+
+create index
+about index
 main menu
 
 Enter command:
 
-use usn
+create index
 
 =======================================
 
-Proceeding to open volume
-Opened handle succesfully: native@0x4c8
-Accessing usn journal...
-Journal information received. Bytes: 56
-Journal raw data: auto-allocated@0x26ecf800370 (56 bytes)
-Accessed usn journal successfully
-Closing handle
-Closed handle successfully...
+
+===========PRE-SCANNER MENU============
+
+Type your directory full paths
+that you want the index to consist of
+in the following manner, for example:
+
+C:\Users\asbia\Downloads
+
+then press enter.
+Or type 'done' and press enter once done.
+Or type 'close' and press enter to discard and exit the scanning process.
+
+Directories taken:
+
+
+Enter command:
+
+C:\Users\asbia\Downloads\mealzz\recipes\
+
+=======================================
+
+empty path: C:\Users\asbia\Downloads\mealzz\recipes
+Added directory successfully...
+
+
+===========PRE-SCANNER MENU============
+
+Type your directory full paths
+that you want the index to consist of
+in the following manner, for example:
+
+C:\Users\asbia\Downloads
+
+then press enter.
+Or type 'done' and press enter once done.
+Or type 'close' and press enter to discard and exit the scanning process.
+
+Directories taken:
+C:\Users\asbia\Downloads\mealzz\recipes
+
+
+Enter command:
+
+C:\Users\asbia\Downloads\mealzz\another folder2 
+
+=======================================
+
+empty path: C:\Users\asbia\Downloads\mealzz\another folder2
+Added directory successfully...
+
+
+===========PRE-SCANNER MENU============
+
+Type your directory full paths
+that you want the index to consist of
+in the following manner, for example:
+
+C:\Users\asbia\Downloads
+
+then press enter.
+Or type 'done' and press enter once done.
+Or type 'close' and press enter to discard and exit the scanning process.
+
+Directories taken:
+C:\Users\asbia\Downloads\mealzz\recipes
+C:\Users\asbia\Downloads\mealzz\another folder2
+
+
+Enter command:
+
+donne
+
+=======================================
+
+This directory does not exist...
+Please try again with a correct directory path
+
+
+===========PRE-SCANNER MENU============
+
+Type your directory full paths
+that you want the index to consist of
+in the following manner, for example:
+
+C:\Users\asbia\Downloads
+
+then press enter.
+Or type 'done' and press enter once done.
+Or type 'close' and press enter to discard and exit the scanning process.
+
+Directories taken:
+C:\Users\asbia\Downloads\mealzz\recipes
+C:\Users\asbia\Downloads\mealzz\another folder2
+
+
+Enter command:
+
+done
+
+=======================================
+
+Saved scanner directories...
+Proceeding to scan...
+
+---------------------------------------
+Scanning...
+---------------------------------------
+
+==============SCANNER MENU=============
+
+Menu Options:
+
+progress
+cancel
+
+Enter command:
+
+
+Scanning Finished!
+
+Scan result :-
+Files found: 2
+Folders found: 2
+Skipped: 0
+
 ==============INDEX MENU===============
 
 update index
@@ -76,5 +190,34 @@ delete index
 main menu
 
 Enter command:
+
+about index
+
+=======================================
+
+About Index: 
+
+C:\Users\asbia\Downloads\mealzz\recipes
+C:\Users\asbia\Downloads\mealzz\another folder2
+Indexed files: 2
+Indexed folders: 2
+Skipped items: 0
+Last updated: 7:42 pm, 25 October 2026
+
+==============INDEX MENU===============
+
+update index
+about index
+delete index
+main menu
+
+Enter command:
+
+exit
+
+=======================================
+
+Exiting application...
+
 ]===
 

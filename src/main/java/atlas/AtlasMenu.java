@@ -1,5 +1,6 @@
 package atlas;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -225,6 +226,47 @@ class AtlasMenu {
                 return message;
             }
 
+        }
+
+        else if (appState.equals(AtlasState.AppState.PRE_SCANNING)) {
+            
+
+            List<Path> dirs = state.tempPaths;
+
+            StringBuilder dirList = new StringBuilder();
+
+            for (Path dir : dirs) {
+                dirList.append(dir).append("\n");
+            }
+
+            message = """
+
+                    ===========PRE-SCANNER MENU============
+
+                    Type your directory full paths 
+                    that you want the index to consist of
+                    in the following manner, for example:
+                    
+                    C:\\Users\\asbia\\Downloads
+
+                    then press enter. 
+                    Or type 'done' and press enter once done.
+                    Or type 'close' and press enter to discard and exit the scanning process.
+
+                    Directories taken:
+                    """ + dirList + """
+
+
+                    Enter command:
+                    """;
+
+            state.currentCommands = new ArrayList<>(List.of(
+                "done",
+                "close"
+            ));
+
+            return message;
+        
         }
 
         else if (appState.equals(AtlasState.AppState.SCANNING)) {

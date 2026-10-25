@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 import atlas.AtlasState;
 import atlas.ChangeMode;
@@ -23,14 +24,13 @@ public class ScanUtils {
         AtlasState state
     ) {
 
-        state.currentScanPath = state.currentPath;
 
         state.currentScanResult = new ScanResult();
 
         state.atlasIndex = new Index();
         
         ScanResult result = FileScanner.scan(
-            state.currentScanPath, 
+            state.tempPaths, 
             state.currentScanResult,
             state.atlasIndex 
         );
@@ -164,6 +164,14 @@ public class ScanUtils {
         }
 
         System.out.println("About Index: ");
+        System.out.println("\nDirectories consisting: ");
+        
+        ArrayList<Path> dirs = state.atlasIndex.getDirectoryList(state.atlasIndex);
+
+        for (Path dir : dirs) {
+            System.out.println(dir);
+        }
+
         System.out.println("\nIndexed files: " + state.atlasIndex.filesIndexed);
         System.out.println("Indexed folders: " + state.atlasIndex.foldersIndexed);
         System.out.println("Skipped items: " + state.atlasIndex.skippedItems);
@@ -202,5 +210,7 @@ public class ScanUtils {
         System.out.println("dummy rescan logic....");
         ChangeMode.indexMode(state);
     }
+
+
 
 }
