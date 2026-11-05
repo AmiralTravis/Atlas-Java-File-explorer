@@ -227,8 +227,8 @@ public class ReadUsn {
 
 
     
-        // long lastProcessedUsn = 20781506728L;
-        long lastProcessedUsn = 20786679512L;
+        // long lastProcessedUsn = 20781506728L; //old
+        long lastProcessedUsn = 20786679512L; //new
 
         READ_USN_JOURNAL_DATA_V0 readData = new READ_USN_JOURNAL_DATA_V0();
 
