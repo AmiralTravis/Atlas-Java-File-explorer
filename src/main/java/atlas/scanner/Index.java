@@ -38,10 +38,10 @@ public class Index implements Serializable {
 
     }
 
-    public ArrayList<Path> getDirectoryList(Index atlasIndex) {
+    public static ArrayList<Path> getDirectoryList(Index atlasIndex) {
         ArrayList<Path> paths = new ArrayList<>();
 
-        for (String dir : directoryList) {
+        for (String dir : atlasIndex.directoryList) {
             paths.add(Path.of(dir));
         }
 
