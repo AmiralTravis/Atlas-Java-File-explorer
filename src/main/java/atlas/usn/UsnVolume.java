@@ -10,7 +10,7 @@ public class UsnVolume {
 
     public static void updateIndexByUsnJournal(Index atlasIndex) {
 
-        ArrayList<Path> targetDirectories = Index.getDirectoryList(atlasIndex);
+        ArrayList<Path> targetDirectories = atlasIndex.getDirectoryList(atlasIndex);
 
         ArrayList<String> targetDirectoryStrings = new ArrayList<>();
 
