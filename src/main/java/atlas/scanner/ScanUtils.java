@@ -195,8 +195,7 @@ public class ScanUtils {
 
     public static void runUsnUpdate(AtlasState state) {
 
-        // System.out.println("Dummy usn logic done...");
-        UsnVolume.updateIndexByUsnJournal();
+        UsnVolume.updateIndexByUsnJournal(state.atlasIndex);
         ChangeMode.indexMode(state);
 
     }
