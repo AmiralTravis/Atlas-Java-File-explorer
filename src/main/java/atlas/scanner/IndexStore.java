@@ -16,7 +16,7 @@ import java.io.IOException;
 
 public class IndexStore {
     
-    static void writeIndex(Index atlasIndex, Path indexPath) throws IOException {
+    public static void writeIndex(Index atlasIndex, Path indexPath) throws IOException {
 
         Path tempFile = Path.of("atlas.index.tmp");
 

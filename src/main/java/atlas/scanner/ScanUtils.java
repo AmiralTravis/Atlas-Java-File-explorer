@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import atlas.AtlasState;
 import atlas.ChangeMode;
 import atlas.usn.UsnVolume;
+import atlas.usn.ReadUsn;
 
 public class ScanUtils {
     
@@ -29,6 +30,9 @@ public class ScanUtils {
 
         state.atlasIndex = new Index();
         
+        state.atlasIndex.lastProcessedUsn = ReadUsn.getLastRecordedUsn();
+        // System.out.println("last recorded usn before scan: " + state.atlasIndex.lastProcessedUsn);
+
         ScanResult result = FileScanner.scan(
             state.tempPaths, 
             state.currentScanResult,
@@ -195,7 +199,7 @@ public class ScanUtils {
 
     public static void runUsnUpdate(AtlasState state) {
 
-        UsnVolume.updateIndexByUsnJournal(state.atlasIndex);
+        UsnVolume.updateIndexByUsnJournal(state);
         ChangeMode.indexMode(state);
 
     }

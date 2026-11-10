@@ -3,12 +3,15 @@ package atlas.usn;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
+import atlas.AtlasState;
 import atlas.scanner.Index;
 
 public class UsnVolume {
 
 
-    public static void updateIndexByUsnJournal(Index atlasIndex) {
+    public static void updateIndexByUsnJournal(AtlasState state) {
+
+        Index atlasIndex = state.atlasIndex;
 
         ArrayList<Path> targetDirectories = atlasIndex.getDirectoryList(atlasIndex);
 
@@ -18,8 +21,10 @@ public class UsnVolume {
             targetDirectoryStrings.add(path.toString());
         }
 
+        long lastProcessedUsn = atlasIndex.lastProcessedUsn;
+
         // -read usn and get records
-        UsnUpdateRecords updateRecord = ReadUsn.getUsnUpdates(targetDirectoryStrings);
+        UsnUpdateRecords updateRecord = ReadUsn.getUsnUpdates(targetDirectoryStrings, lastProcessedUsn);
 
         System.out.println("final rezzult: ");
 
@@ -33,7 +38,7 @@ public class UsnVolume {
 
         // -input records in index updation
 	    // ->after successful updation, save atlas index, else report error
-        UpdateIndex.updateIndexByUsn(updateRecord, atlasIndex);
+        UpdateIndex.updateIndexByUsn(updateRecord, state);
 
     }
 
