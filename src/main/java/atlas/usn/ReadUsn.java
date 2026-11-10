@@ -94,7 +94,10 @@ public class ReadUsn {
 
 
 
-    public static UsnUpdateRecords getUsnUpdates(ArrayList<String> targetDirectories) {
+    public static UsnUpdateRecords getUsnUpdates(
+        ArrayList<String> targetDirectories,
+        long lastProcessedUsn
+    ) {
 
         System.out.println("Proceeding to open volume");
         WinNT.HANDLE handle = openVolume("C");
@@ -115,7 +118,8 @@ public class ReadUsn {
         // System.out.println("Accessed usn journal successfully\n");
 
         // System.out.println("Accessing usn records...");
-        UsnUpdateRecords updateRecord = accessAndReturnUsnRecords(targetDirectories, handle, data);
+        UsnUpdateRecords updateRecord = accessAndReturnUsnRecords(
+            targetDirectories, handle, data, lastProcessedUsn);
 
         // System.out.println("Accessed usn records successfully\n");
 
@@ -222,13 +226,15 @@ public class ReadUsn {
 
     static UsnUpdateRecords accessAndReturnUsnRecords(
         ArrayList<String> targetDirectories,
-        WinNT.HANDLE handle, USN_JOURNAL_DATA_V0 journalData) {
+        WinNT.HANDLE handle, USN_JOURNAL_DATA_V0 journalData,
+        long lastProcessedUsn
+    ) {
 
 
 
     
         // long lastProcessedUsn = 20781506728L; //old
-        long lastProcessedUsn = 20786679512L; //new
+        // long lastProcessedUsn = 20786679512L; //new
 
         READ_USN_JOURNAL_DATA_V0 readData = new READ_USN_JOURNAL_DATA_V0();
 
@@ -309,6 +315,31 @@ public class ReadUsn {
     }
 
 
+
+
+
+
+
+    // HELPER METHOD FOR OTHER FILES AND PACKAGES
+
+    public static long getLastRecordedUsn() {
+
+        WinNT.HANDLE handle = openVolume("C");
+
+        if (handle == null) {
+            throw new IllegalStateException("Failed to open volume C:");
+        }
+
+        try {
+
+            USN_JOURNAL_DATA_V0 data = accessUsnJournal(handle);
+
+            return data.NextUsn;
+
+        } finally {
+            closeVolume(handle);
+        }
+    }
 
 
     

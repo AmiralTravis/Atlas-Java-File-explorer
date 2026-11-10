@@ -19,6 +19,9 @@ public class Index implements Serializable {
 
     public LocalDateTime modifiedAt;
 
+    public long lastProcessedUsn;
+
+
 
     void addFile(FileRecord fileRecord) {
 
