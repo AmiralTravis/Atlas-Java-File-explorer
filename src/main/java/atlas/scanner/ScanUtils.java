@@ -39,6 +39,8 @@ public class ScanUtils {
             state.atlasIndex 
         );
 
+        // state.atlasIndex.printTree();
+
         state.atlasIndex.filesIndexed = result.getFilesFound();
         state.atlasIndex.foldersIndexed = result.getFoldersFound();
         state.atlasIndex.skippedItems = result.getSkippedFound();

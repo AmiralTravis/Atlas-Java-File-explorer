@@ -3,6 +3,7 @@ package atlas.usn;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 
+
 public class UsnRecord {
     
 
@@ -23,12 +24,17 @@ public class UsnRecord {
     private String reason;
     private String changeType;
 
-
+    private long fileRef;
+    private long parentFileRef;
 
    
+    public String getChangeType() {
+        return this.changeType;
+    }
 
     public UsnRecord(Path path, BasicFileAttributes attributes,
-                    String reason, String changeType) {
+                String reason, String changeType,
+                long fileRef, long parentFileRef) {
 
         this.name = path.getFileName().toString();
         this.path = path;
@@ -38,6 +44,18 @@ public class UsnRecord {
         this.extension = getExtension(this.name);
         this.reason = reason;
         this.changeType = changeType;
+        
+        this.fileRef = fileRef;
+        this.parentFileRef = parentFileRef;
+    }
+
+
+    public long getFileRef() {
+        return fileRef;
+    }
+
+    public long getParentFileRef() {
+        return parentFileRef;
     }
 
 
@@ -52,6 +70,8 @@ public class UsnRecord {
         return fileName.substring( dot + 1);
 
     }
+
+
 
     @Override
 public String toString() {

@@ -1,17 +1,15 @@
 ===8:09pm 25-10-2026===
 ===final test case before commit===
 ===case description : {
-    readme: test to check if we can get records on specific directory reliably on usn records
+    converted arraylist index to hashmap tree index..., each node object shall contain the 
+    following fields:
 
-    custom dir tested on: C:\\Users\\asbia\\AppData\\Local\\Temp\\jna-93105032
-
-    note : deleted files werent mentioned in usn results, bcz i filtered out any usn records, of 
-    which we couldnt get windows to find path of... which usually happens when the file is deleted,
-    and there are hundreds of thousands of such files in usn journal, and since we are unable to 
-    see the path itself, theres no way to just print the usn result for this specific directory 
-    for its deleted files... basically, we would need index for this, and couldnt do it by usn 
-    journal alone... we need to check file id with index file id, and get deleted file path from 
-    index object of now deleted file... 
+    id
+    parentid
+    name
+    type
+    children
+    filerecord (for files)
 
 }===
 
@@ -19,188 +17,33 @@
 ===Test : [
     {
 
-custom dir tested on: C:\\Users\\asbia\\AppData\\Local\\Temp\\jna-93105032
+==============SCANNER MENU=============
 
+Menu Options:
 
-
-usn result 1:
-
-jna4518533240199418914.dll	FILE_CREATE					New file
-jna4518533240199418914.dll	FILE_CREATE | CLOSE				New file	
-jna4518533240199418914.dll	DATA_TRUNCATION					Updated file contents
-jna4518533240199418914.dll	DATA_EXTEND | DATA_TRUNCATION			Updated file contents
-jna4518533240199418914.dll	DATA_EXTEND | DATA_TRUNCATION | CLOSE		Updated file contents
-jna4518533240199418914.dll	BASIC_INFO_CHANGE				Updated file contents
-jna4518533240199418914.dll	BASIC_INFO_CHANGE | CLOSE			Updated file contents
-jna4518533240199418914.dll.x	FILE_CREATE					New file
-jna4518533240199418914.dll.x	FILE_CREATE | CLOSE				New file
-
-
-
-usn result 2:
-
-jna11849844903929424998.dll	FILE_CREATE					New file
-jna11849844903929424998.dll	FILE_CREATE | CLOSE				New file
-jna11849844903929424998.dll	DATA_TRUNCATION					Updated file contents
-jna11849844903929424998.dll	DATA_EXTEND | DATA_TRUNCATION			Updated file contents
-jna11849844903929424998.dll	DATA_EXTEND | DATA_TRUNCATION | CLOSE		Updated file contents
-jna11849844903929424998.dll	BASIC_INFO_CHANGE				Updated file contents
-jna11849844903929424998.dll	BASIC_INFO_CHANGE | CLOSE			Updated file contents
-jna11849844903929424998.dll.x	FILE_CREATE					New file
-jna11849844903929424998.dll.x	FILE_CREATE | CLOSE				New file
-
-
-windows file explorer state in target directory for result 1:
-
-jna17320558520498974081.dll	20-10-2026 11:20am
-jna4518533240199418914.dll	01-11-2026 10:35pm
-jna4518533240199418914.dll.x	01-11-2026 10:35pm
-
-
-
-windows file explorer state in target directory for result 1:
-
-jna11849844903929424998.dll	01-11-2026 10:46pm
-jna11849844903929424998.dll.x	01-11-2026 10:46pm
-jna17320558520498974081.dll	20-10-2026 11:20am
-
-    },
-    {
-        ==============UPDATE INDEX MENU===============
-
-full rescan
-use usn
-index menu
-main menu
+progress
+cancel
 
 Enter command:
 
-use usn
+ Name: another folder2 | ID: 7318349394726254 | Parent ID: 4222124650947523 | Type: DIRECTORY | FileRecord: null
+ Name:     testfoldr12 | ID: 18295873486379224 | Parent ID: 7318349394726254 | Type: DIRECTORY | FileRecord: null
+ Name:         New Text Document.txt | ID: 4222124650927020 | Parent ID: 18295873486379224 | Type: FILE | FileRecord: atlas.FileRecord@6038a07e
+ Name:         test2 | ID: 39125021762832287 | Parent ID: 18295873486379224 | Type: DIRECTORY | FileRecord: null
+ Name:             test2.1 | ID: 8444249301586758 | Parent ID: 39125021762832287 | Type: DIRECTORY | FileRecord: null
+ Name:     randomtext doc1.txt | ID: 10977524091761252 | Parent ID: 7318349394726254 | Type: FILE | FileRecord: atlas.FileRecord@2488d435
+ Name:     testdoc12.txt | ID: 3096224744065219 | Parent ID: 7318349394726254 | Type: FILE | FileRecord: atlas.FileRecord@74099fd6
 
-=======================================
+Scanning Finished!
 
-Proceeding to open volume
-Opened handle succesfully: native@0x4d4
-
-Accessing usn journal...
-Journal information received. Bytes: 56
-Journal raw data: auto-allocated@0x177db04adb0 (56 bytes)
-Accessed usn journal successfully
-
-Accessing usn records...
-StartUsn       = 20602421248
-ReasonMask     = -1
-ReturnOnClose  = 0
-Timeout        = 0
-BytesToWaitFor = 0
-JournalID      = 133763223761890974
-Struct size    = 40
-Journal records information received. Bytes: 39732800
-Journal Records raw data: auto-allocated@0x1779579ad50 (40 bytes)
-Bytes returned: 39732800
-Number of usn records read on avg: 310412
-Next USN: 20642644568
-
-========== MATCHED DIRECTORY RECORD ==========
-Record #: 358520
-File name: jna11849844903929424998.dll
-Full path: \\?\C:\Users\asbia\AppData\Local\Temp\jna-93105032\jna11849844903929424998.dll
-Timestamp (IST): 01-11-2026 10:46:42 pm
-Reason: FILE_CREATE
-Mapping: New file
-Record length: 120 bytes
-
-========== MATCHED DIRECTORY RECORD ==========
-Record #: 358521
-File name: jna11849844903929424998.dll
-Full path: \\?\C:\Users\asbia\AppData\Local\Temp\jna-93105032\jna11849844903929424998.dll
-Timestamp (IST): 01-11-2026 10:46:42 pm
-Reason: FILE_CREATE | CLOSE
-Mapping: New file
-Record length: 120 bytes
-
-========== MATCHED DIRECTORY RECORD ==========
-Record #: 358522
-File name: jna11849844903929424998.dll
-Full path: \\?\C:\Users\asbia\AppData\Local\Temp\jna-93105032\jna11849844903929424998.dll
-Timestamp (IST): 01-11-2026 10:46:42 pm
-Reason: DATA_TRUNCATION
-Mapping: Updated file contents
-Record length: 120 bytes
-
-========== MATCHED DIRECTORY RECORD ==========
-Record #: 358523
-File name: jna11849844903929424998.dll
-Full path: \\?\C:\Users\asbia\AppData\Local\Temp\jna-93105032\jna11849844903929424998.dll
-Timestamp (IST): 01-11-2026 10:46:42 pm
-Reason: DATA_EXTEND | DATA_TRUNCATION
-Mapping: Updated file contents
-Record length: 120 bytes
-
-========== MATCHED DIRECTORY RECORD ==========
-Record #: 358524
-File name: jna11849844903929424998.dll
-Full path: \\?\C:\Users\asbia\AppData\Local\Temp\jna-93105032\jna11849844903929424998.dll
-Timestamp (IST): 01-11-2026 10:46:42 pm
-Reason: DATA_EXTEND | DATA_TRUNCATION | CLOSE
-Mapping: Updated file contents
-Record length: 120 bytes
-
-========== MATCHED DIRECTORY RECORD ==========
-Record #: 358525
-File name: jna11849844903929424998.dll
-Full path: \\?\C:\Users\asbia\AppData\Local\Temp\jna-93105032\jna11849844903929424998.dll
-Timestamp (IST): 01-11-2026 10:46:42 pm
-Reason: BASIC_INFO_CHANGE
-Mapping: Updated file contents
-Record length: 120 bytes
-
-========== MATCHED DIRECTORY RECORD ==========
-Record #: 358526
-File name: jna11849844903929424998.dll
-Full path: \\?\C:\Users\asbia\AppData\Local\Temp\jna-93105032\jna11849844903929424998.dll
-Timestamp (IST): 01-11-2026 10:46:42 pm
-Reason: BASIC_INFO_CHANGE | CLOSE
-Mapping: Updated file contents
-Record length: 120 bytes
-
-========== MATCHED DIRECTORY RECORD ==========
-Record #: 358527
-File name: jna11849844903929424998.dll.x
-Full path: \\?\C:\Users\asbia\AppData\Local\Temp\jna-93105032\jna11849844903929424998.dll.x
-Timestamp (IST): 01-11-2026 10:46:42 pm
-Reason: FILE_CREATE
-Mapping: New file
-Record length: 120 bytes
-
-========== MATCHED DIRECTORY RECORD ==========
-Record #: 358528
-File name: jna11849844903929424998.dll.x
-Full path: \\?\C:\Users\asbia\AppData\Local\Temp\jna-93105032\jna11849844903929424998.dll.x
-Timestamp (IST): 01-11-2026 10:46:42 pm
-Reason: FILE_CREATE | CLOSE
-Mapping: New file
-Record length: 120 bytes
-
-========== FILTER SUMMARY ==========
-Total records parsed: 358528
-Directory-matched records: 9
-Unresolved path records: 198175
-
-Total records parsed: 358528
-Accessed usn records successfully
-
-Closing handle
-Closed handle successfully...
+Scan result :-
+Files found: 3
+Folders found: 4
+Skipped: 0
 
 ==============INDEX MENU===============
 
-update index
-about index
-delete index
-main menu
 
-Enter command:
     }
 ]===
 

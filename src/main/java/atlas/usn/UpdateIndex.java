@@ -10,8 +10,30 @@ public class UpdateIndex {
     
     static void updateIndexByUsn(UsnUpdateRecords updateRecord, AtlasState state) {
 
-        System.out.println("dummy update index by usn...");
 
+        for (UsnRecord usnUpdateRecord : updateRecord.UsnUpdateRecordsList) {
+
+            if (usnUpdateRecord.getChangeType().equals("New file")) {
+                newFileUpdation();
+            }
+
+            else if (usnUpdateRecord.getChangeType().equals("Deleted file")) {
+                deleteFileUpdation();
+            }
+
+            else if (usnUpdateRecord.getChangeType().equals("Renamed file")) {
+                renameFileUpdation();
+            }
+
+            else if (usnUpdateRecord.getChangeType().equals("Updated file contents")) {
+                updateFileUpdation();
+            }
+
+            else {
+                System.out.println("Issue occured while updating index. Invalid USN reason.");
+                return;
+            }
+        }
 
         try {
 
@@ -30,5 +52,21 @@ public class UpdateIndex {
 
 
         
+    }
+
+    static void newFileUpdation() {
+        System.out.println("dummy new file updation logic");
+    }
+
+    static void deleteFileUpdation() {
+        System.out.println("dummy delete file updation logic");
+    }
+
+    static void renameFileUpdation() {
+        System.out.println("dummy rename file updation logic");
+    }
+
+    static void updateFileUpdation() {
+        System.out.println("dummy update file updation logic");
     }
 }
