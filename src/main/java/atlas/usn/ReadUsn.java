@@ -1,5 +1,6 @@
 package atlas.usn;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +17,8 @@ import com.sun.jna.platform.win32.Winioctl;
 import com.sun.jna.platform.win32.WinioctlUtil;
 import com.sun.jna.ptr.IntByReference;
 
+import com.sun.jna.win32.StdCallLibrary;
+import com.sun.jna.win32.W32APIOptions;
 
 
 public class ReadUsn {
@@ -340,6 +343,131 @@ public class ReadUsn {
             closeVolume(handle);
         }
     }
+
+
+    public static class BY_HANDLE_FILE_INFORMATION extends Structure {
+
+    public WinNT.DWORD dwFileAttributes;
+    public WinNT.FILETIME ftCreationTime;
+    public WinNT.FILETIME ftLastAccessTime;
+    public WinNT.FILETIME ftLastWriteTime;
+    public WinNT.DWORD dwVolumeSerialNumber;
+    public WinNT.DWORD nFileSizeHigh;
+    public WinNT.DWORD nFileSizeLow;
+    public WinNT.DWORD nNumberOfLinks;
+    public WinNT.DWORD nFileIndexHigh;
+    public WinNT.DWORD nFileIndexLow;
+
+    @Override
+    protected List<String> getFieldOrder() {
+        return Arrays.asList(
+            "dwFileAttributes",
+            "ftCreationTime",
+            "ftLastAccessTime",
+            "ftLastWriteTime",
+            "dwVolumeSerialNumber",
+            "nFileSizeHigh",
+            "nFileSizeLow",
+            "nNumberOfLinks",
+            "nFileIndexHigh",
+            "nFileIndexLow"
+        );
+    }
+}
+    
+
+
+
+
+
+public interface Kernel32Extended extends StdCallLibrary {
+
+    Kernel32Extended INSTANCE =
+        com.sun.jna.Native.load(
+            "kernel32",
+            Kernel32Extended.class,
+            W32APIOptions.DEFAULT_OPTIONS
+        );
+
+    boolean GetFileInformationByHandle(
+        WinNT.HANDLE hFile,
+        BY_HANDLE_FILE_INFORMATION lpFileInformation
+    );
+}
+
+
+
+
+public static long getFileId(Path path) {
+
+    WinNT.HANDLE handle = Kernel32.INSTANCE.CreateFile(
+        path.toAbsolutePath().toString(),
+        WinNT.FILE_READ_ATTRIBUTES,
+        WinNT.FILE_SHARE_READ |
+        WinNT.FILE_SHARE_WRITE |
+        WinNT.FILE_SHARE_DELETE,
+        null,
+        WinNT.OPEN_EXISTING,
+        WinNT.FILE_FLAG_BACKUP_SEMANTICS,
+        null
+    );
+
+    if (WinBase.INVALID_HANDLE_VALUE.equals(handle)) {
+        throw new IllegalStateException(
+            "Could not open: " + path +
+            ", error=" + Kernel32.INSTANCE.GetLastError()
+        );
+    }
+
+    try {
+
+        BY_HANDLE_FILE_INFORMATION info =
+            new BY_HANDLE_FILE_INFORMATION();
+
+        // boolean success =
+        //     Kernel32.INSTANCE.GetFileInformationByHandle(
+        //         handle,
+        //         info
+        //     );
+        boolean success =
+            Kernel32Extended.INSTANCE.GetFileInformationByHandle(
+                handle,
+                info
+            );
+
+        if (!success) {
+            throw new IllegalStateException(
+                "GetFileInformationByHandle failed. Error: " +
+                Kernel32.INSTANCE.GetLastError()
+            );
+        }
+
+        info.read();
+
+        return
+            ((info.nFileIndexHigh.longValue() & 0xFFFFFFFFL) << 32)
+            |
+            (info.nFileIndexLow.longValue() & 0xFFFFFFFFL);
+
+    } finally {
+        Kernel32.INSTANCE.CloseHandle(handle);
+    }
+}
+
+
+public static long getParentFileId(Path path) {
+
+    Path parent = path.toAbsolutePath().getParent();
+
+    if (parent == null) {
+        throw new IllegalArgumentException(
+            "Path has no parent: " + path
+        );
+    }
+
+    return getFileId(parent);
+}
+
 
 
     

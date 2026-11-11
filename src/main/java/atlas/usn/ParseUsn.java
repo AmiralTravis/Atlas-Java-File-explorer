@@ -1,6 +1,5 @@
 package atlas.usn;
 
-// import java.lang.annotation.Native;
 import com.sun.jna.Native;
 
 import java.io.IOException;
@@ -9,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -21,7 +19,6 @@ import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
 
-import atlas.scanner.Index;
 
 public class ParseUsn {
     
@@ -33,25 +30,11 @@ static UsnUpdateRecords parseAndReturnUsnRecords(
         Memory buffer, int bytesReturned, WinNT.HANDLE volumeHandle) {
 
 
-    long nextUsn = buffer.getLong(0);
-    // System.out.println("Next USN: " + nextUsn);
 
     long offset = 8;
     int totalRecords = 0;
 
     UsnUpdateRecords updates = new UsnUpdateRecords();
-
-
-    // Add as many directories as you want here.
-    // List<String> targetDirectories = List.of(
-    //     // "C:\\Users\\YourName\\Documents",
-    //     // "C:\\Users\\YourName\\Downloads",
-    //     // "D:\\Projects"
-    //     "C:\\Users\\asbia\\AppData\\Local\\Temp\\jna-93105032"
-    // );
-
-    int matchedRecords = 0;
-    int unresolvedRecords = 0;
 
     Map<String, Integer> reasonCounts = new TreeMap<>();
 
@@ -59,7 +42,6 @@ static UsnUpdateRecords parseAndReturnUsnRecords(
 
         int length = buffer.getInt(offset);
         short major = buffer.getShort(offset + 4);
-        short minor = buffer.getShort(offset + 6);
 
         if (length < 8 || offset + length > bytesReturned) {
             throw new IllegalStateException(
@@ -72,18 +54,11 @@ static UsnUpdateRecords parseAndReturnUsnRecords(
         if (major == 2 && length >= 60) {
 
             long fileRef = buffer.getLong(offset + 8);
-            long parentRef = buffer.getLong(offset + 16);
-            long usn = buffer.getLong(offset + 24);
-            long fileTime = buffer.getLong(offset + 32);
+            long parentFileRef = buffer.getLong(offset + 16);
+
             int reason = buffer.getInt(offset + 40);
 
-            int sourceInfo = buffer.getInt(offset + 44);
 
-            long securityId = Integer.toUnsignedLong(
-                buffer.getInt(offset + 48)
-            );
-
-            int attributes = buffer.getInt(offset + 52);
 
             int nameLength = Short.toUnsignedInt(
                 buffer.getShort(offset + 56)
@@ -106,10 +81,7 @@ static UsnUpdateRecords parseAndReturnUsnRecords(
                 );
             }
 
-            String fileName = new String(
-                buffer.getByteArray(offset + nameOffset, nameLength),
-                java.nio.charset.StandardCharsets.UTF_16LE
-            );
+            
 
 
 
@@ -123,130 +95,80 @@ static UsnUpdateRecords parseAndReturnUsnRecords(
 
             // Map the USN reason to one of the four categories.
             String mapping = mapReason(reason);
-
-            // // Construct the simplified record information.
-            // String recordInfo =
-            //     "Record #: " + totalRecords
-            //     + "\nFile name: " + fileName
-            //     + "\nFull path: " + fullPath
-            //     + "\nTimestamp (IST): " + formatFileTime(fileTime)
-            //     + "\nReason: " + decodedReason
-            //     + "\nMapping: " + (
-            //         mapping != null ? mapping : "Other change"
-            //     )
-            //     + "\nRecord length: " + length + " bytes";
-
-            // Construct UsnRecord if the path is resolved
-            // if (!fullPath.equals("Unable to find")) {
-
-            //     Path path = Path.of(fullPath);
-
-            //     try {
-            //         BasicFileAttributes attributes =
-            //             Files.readAttributes(path, BasicFileAttributes.class);
-
-            //         UsnRecord record = new UsnRecord(
-            //             path,
-            //             attributes,
-            //             decodedReason,
-            //             mapping != null ? mapping : "Other change"
-            //         );
-
-            //         updates.addRecord(record);
-
-            //     } catch (IOException e) {
-            //         System.out.println("Could not read attributes: " + fullPath);
-            //     }
-            // }
-
            
 
             // Include records whose paths could not be resolved.
             // These cannot be checked against the directory filter.
-            if (fullPath.equals("Unable to find")) {
+            
 
-                unresolvedRecords++;
+            // Normalize the resolved path.
+            String normalizedPath = fullPath
+                .replace('/', '\\')
+                .replaceFirst("^\\\\\\\\\\?\\\\", "");
 
-                // no need to print these, creates too much noise 
+            boolean directoryMatched = false;
 
-                // System.out.println(
-                //     "\n========== UNRESOLVED PATH RECORD =========="
-                // );
-                // System.out.println(recordInfo);
+            for (String directory : targetDirectories) {
 
-            } else {
-
-                // Normalize the resolved path.
-                String normalizedPath = fullPath
+                String normalizedDirectory = directory
                     .replace('/', '\\')
                     .replaceFirst("^\\\\\\\\\\?\\\\", "");
 
-                boolean directoryMatched = false;
-
-                for (String directory : targetDirectories) {
-
-                    String normalizedDirectory = directory
-                        .replace('/', '\\')
-                        .replaceFirst("^\\\\\\\\\\?\\\\", "");
-
-                    // Remove trailing separators, except for drive roots.
-                    while (normalizedDirectory.endsWith("\\")
-                            && normalizedDirectory.length() > 3) {
-                        normalizedDirectory = normalizedDirectory.substring(
-                            0, normalizedDirectory.length() - 1
-                        );
-                    }
-
-                    String directoryPrefix =
-                        normalizedDirectory.endsWith("\\")
-                            ? normalizedDirectory
-                            : normalizedDirectory + "\\";
-
-                    // Match the directory itself or anything beneath it.
-                    if (normalizedPath.equalsIgnoreCase(normalizedDirectory)
-                            || normalizedPath.regionMatches(
-                                true, 0, directoryPrefix, 0,
-                                directoryPrefix.length()
-                            )) {
-
-                        directoryMatched = true;
-                        break;
-                    }
+                // Remove trailing separators, except for drive roots.
+                while (normalizedDirectory.endsWith("\\")
+                        && normalizedDirectory.length() > 3) {
+                    normalizedDirectory = normalizedDirectory.substring(
+                        0, normalizedDirectory.length() - 1
+                    );
                 }
 
-                if (directoryMatched) {
+                String directoryPrefix =
+                    normalizedDirectory.endsWith("\\")
+                        ? normalizedDirectory
+                        : normalizedDirectory + "\\";
 
-                    matchedRecords++;
+                // Match the directory itself or anything beneath it.
+                if (normalizedPath.equalsIgnoreCase(normalizedDirectory)
+                        || normalizedPath.regionMatches(
+                            true, 0, directoryPrefix, 0,
+                            directoryPrefix.length()
+                        )) {
 
-                    // System.out.println(
-                    //     "\n========== MATCHED DIRECTORY RECORD =========="
-                    // );
-                    // System.out.println(recordInfo);
+                    directoryMatched = true;
+                    break;
+                }
+            }
 
-                    // Construct UsnRecord if the path is resolved
-                    if (!fullPath.equals("Unable to find")) {
+            if (directoryMatched) {
 
-                        Path path = Path.of(normalizedPath);
 
-                        try {
-                            BasicFileAttributes fileAttributes  =
-                                Files.readAttributes(path, BasicFileAttributes.class);
+                // Construct UsnRecord if the path is resolved
+                if (!fullPath.equals("Unable to find")) {
 
-                            UsnRecord record = new UsnRecord(
-                                path,
-                                fileAttributes ,
-                                decodedReason,
-                                mapping != null ? mapping : "Other change"
-                            );
+                    Path path = Path.of(normalizedPath);
 
-                            updates.addRecord(record);
+                    try {
+                        BasicFileAttributes fileAttributes  =
+                            Files.readAttributes(path, BasicFileAttributes.class);
 
-                        } catch (IOException e) {
-                            System.out.println("Could not read attributes: " + fullPath);
-                        }
+                        
+                        UsnRecord record = new UsnRecord(
+                            path,
+                            fileAttributes,
+                            decodedReason,
+                            mapping != null ? mapping : "Other change",
+                            fileRef,
+                            parentFileRef
+                        );
+
+                        updates.addRecord(record);
+
+                    } catch (IOException e) {
+                        System.out.println("Could not read attributes: " + fullPath);
                     }
                 }
             }
+            
         }
 
         // Move to the next 8-byte-aligned record.
@@ -254,12 +176,6 @@ static UsnUpdateRecords parseAndReturnUsnRecords(
     }
 
 
-    // System.out.println("\n========== FILTER SUMMARY ==========");
-    // System.out.println("Total records parsed: " + totalRecords);
-    // System.out.println("Directory-matched records: " + matchedRecords);
-    // System.out.println("Unresolved path records: " + unresolvedRecords);
-
-    // System.out.println("\nTotal records parsed: " + totalRecords);
 
     return updates;
 

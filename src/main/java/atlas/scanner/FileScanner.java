@@ -7,8 +7,12 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
 
 import atlas.FileRecord;
+import atlas.usn.ReadUsn;
 
 public class FileScanner {
 
@@ -18,6 +22,8 @@ public class FileScanner {
         try {
 
             for (Path path : paths) {
+
+                Map<Path, Long> directoryIds = new HashMap<>();
 
                 atlasIndex.addDirectory(path);
                 
@@ -37,14 +43,32 @@ public class FileScanner {
 
                             result.incrementFolders();
 
-                            // System.out.println(
-                            //     "passed result.incrementFolders"
-                            // );
+                            long directoryId = ReadUsn.getFileId(directory);
+
+                            long parentReferId = ReadUsn.getParentFileId(directory);
+
+                            directoryIds.put(directory, directoryId);
+
+                            FileSystemNode node = new FileSystemNode(
+                                directoryId,
+                                parentReferId,
+                                directory.getFileName() == null
+                                    ? directory.toString()
+                                    : directory.getFileName().toString(),
+                                FileSystemNode.NodeType.DIRECTORY
+                            );
+
+                            Path parentPath = directory.getParent();
+
+                            Long parentId = directoryIds.get(parentPath);
+
+                            if (parentId == null) {
+                                atlasIndex.addRootNode(node);
+                            } else {
+                                atlasIndex.addNode(node, parentId);
+                            }
 
                             atlasIndex.addFolder(directory);
-                            // System.out.println(
-                            //     "passed atlasIndex.addFolder(directory)"
-                            // );
 
                             return FileVisitResult.CONTINUE;
                         }
@@ -61,19 +85,32 @@ public class FileScanner {
 
                             result.incrementFiles();
 
-                            // System.out.println(
-                            //     "passed result.incrementFiles();"
-                            // );
+                            long fileId = ReadUsn.getFileId(file);
+
+                            long parentReferId = ReadUsn.getParentFileId(file);
+
+                            Long parentId = directoryIds.get(file.getParent());
+
+                            if (parentId == null) {
+                                throw new IllegalStateException(
+                                    "Parent directory not found in index: " + file
+                                );
+                            }
 
                             FileRecord record = new FileRecord(file, attributes);
-                            // System.out.println(
-                            //     "passed FileRecord record = new FileRecord(file, attributes);"
-                            // );
+
+                            FileSystemNode node = new FileSystemNode(
+                                fileId,
+                                parentReferId,
+                                file.getFileName().toString(),
+                                FileSystemNode.NodeType.FILE
+                            );
+
+                            node.setFileRecord(record);
+
+                            atlasIndex.addNode(node, parentId);
 
                             atlasIndex.addFile(record);
-                            // System.out.println(
-                            //     "passed atlasIndex.addFile(record);"
-                            // );
 
                             return FileVisitResult.CONTINUE;
                         }
