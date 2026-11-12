@@ -10,9 +10,6 @@ import java.time.format.DateTimeFormatter;
 public class FileRecord implements Serializable {
     
     String name;
-    // String path; // no need of path, otherwise we will have to update this separately 
-    //  whenever index updates occur,
-    //  we would rather just find path by walking the index hashmap tree
     long size;
     long createdAt;
     long modifiedAt;
@@ -22,7 +19,6 @@ public class FileRecord implements Serializable {
     public FileRecord(Path path, BasicFileAttributes attribute) {
 
         this.name = path.getFileName().toString();
-        // this.path = path.toString();
         this.size = attribute.size();
         this.createdAt = attribute.creationTime().toMillis();
         this.modifiedAt = attribute.lastModifiedTime().toMillis();
@@ -48,7 +44,6 @@ public class FileRecord implements Serializable {
 
         builder.append("{\n");
         builder.append("name       : " + file.name + "\n");
-        // builder.append("path       : " + file.path + "\n");
         builder.append("size       : " + file.size + "\n");
         DateTimeFormatter formatter = 
             DateTimeFormatter.ofPattern("h:mm a, d MMMM yyyy")
