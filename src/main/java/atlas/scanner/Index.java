@@ -93,16 +93,6 @@ public class Index implements Serializable {
 
 
 
-    public static void showFileRecords(ArrayList<FileRecord> fileList) {
-        
-        for (FileRecord i: fileList) {
-            System.out.println(i.getFileRecord(i));
-        }
-        
-        
-    } 
-
-
 
     public void printTree() {
         for (FileSystemNode node : rootNodes) {
