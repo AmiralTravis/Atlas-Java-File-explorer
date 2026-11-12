@@ -101,39 +101,36 @@ public class UpdateIndex {
         currentNode = index.getNode(currentNode.getParentId());
 
         // 3. Reconcile ancestors using file IDs.
-        while (currentNode != null) {
+        Path actualParentPath = actualPath.getParent();
 
-            Path actualParentPath = actualPath.getParent();
-
-            if (actualParentPath == null) {
-                break;
-            }
-
-            long actualParentId = ReadUsn.getFileId(actualParentPath);
-
-            
-            FileSystemNode newParent = index.getNode(actualParentId);
-
-
-            // if (newParent == null) {
-            //     System.out.println(
-            //         "Actual parent not found in index. Rescan required." + 
-            //         "(OR)" + 
-            //         "reached end of tree in index."
-            //     );
-            //     return;
-            // }
-
-
-            FileSystemNode oldParent = currentNode;
-
-            oldParent.removeChild(childNode);
-
-            childNode.setParentId(actualParentId);
-            newParent.addChild(childNode);
-
-            break;
+        if (actualParentPath == null) {
+            // break;
+            return;
         }
+
+        long actualParentId = ReadUsn.getFileId(actualParentPath);
+
+        
+        FileSystemNode newParent = index.getNode(actualParentId);
+
+        // if (newParent == null) {
+        //     System.out.println(
+        //         "Actual parent not found in index. Rescan required." + 
+        //         "(OR)" + 
+        //         "reached end of tree in index."
+        //     );
+        //     return;
+        // }
+
+        FileSystemNode oldParent = currentNode;
+
+        
+        oldParent.removeChild(childNode);
+
+        childNode.setParentId(actualParentId);
+        
+        newParent.addChild(childNode);
+
         
     }
 
