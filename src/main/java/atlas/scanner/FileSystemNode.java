@@ -78,26 +78,34 @@ public class FileSystemNode implements Serializable {
 
 
     public void addChild(FileSystemNode child) {
-    children.put(child.getName(), child);
-    child.setParentId(this.id);
-}
 
-public FileSystemNode removeChild(String childName) {
-    FileSystemNode child = children.remove(childName);
+        // Check if a child with the same file ID already exists
+        for (FileSystemNode existingChild : children.values()) {
+            if (existingChild.getId() == child.getId()) {
+                return; // Already exists, don't add again
+            }
+        }
 
-    if (child != null) {
-        child.setParentId(-1L);
+        children.put(child.getName(), child);
+        child.setParentId(this.id);
     }
 
-    return child;
-}
+    public FileSystemNode removeChild(String childName) {
+        FileSystemNode child = children.remove(childName);
 
-public void removeChild(FileSystemNode child) {
-    removeChild(child.getName());
-}
+        if (child != null) {
+            child.setParentId(-1L);
+        }
 
-public void setType(NodeType type) {
-    this.type = type;
-}
+        return child;
+    }
+
+    public void removeChild(FileSystemNode child) {
+        removeChild(child.getName());
+    }
+
+    public void setType(NodeType type) {
+        this.type = type;
+    }
 
 }
