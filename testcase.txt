@@ -1,47 +1,212 @@
-===8:09pm 25-10-2026===
+===4:29pm 12-11-2026===
 ===final test case before commit===
 ===case description : {
-    converted arraylist index to hashmap tree index..., each node object shall contain the 
-    following fields:
-
-    id
-    parentid
-    name
-    type
-    children
-    filerecord (for files)
-
+    first successful rename usn record index updation success
 }===
 
 
 ===Test : [
     {
 
-==============SCANNER MENU=============
 
-Menu Options:
+        lastProcessedUsn high level reached: 21039247840
 
-progress
-cancel
 
-Enter command:
 
  Name: another folder2 | ID: 7318349394726254 | Parent ID: 4222124650947523 | Type: DIRECTORY | FileRecord: null
  Name:     testfoldr12 | ID: 18295873486379224 | Parent ID: 7318349394726254 | Type: DIRECTORY | FileRecord: null
- Name:         New Text Document.txt | ID: 4222124650927020 | Parent ID: 18295873486379224 | Type: FILE | FileRecord: atlas.FileRecord@6038a07e
  Name:         test2 | ID: 39125021762832287 | Parent ID: 18295873486379224 | Type: DIRECTORY | FileRecord: null
  Name:             test2.1 | ID: 8444249301586758 | Parent ID: 39125021762832287 | Type: DIRECTORY | FileRecord: null
- Name:     randomtext doc1.txt | ID: 10977524091761252 | Parent ID: 7318349394726254 | Type: FILE | FileRecord: atlas.FileRecord@2488d435
- Name:     testdoc12.txt | ID: 3096224744065219 | Parent ID: 7318349394726254 | Type: FILE | FileRecord: atlas.FileRecord@74099fd6
+ Name:         testmovefolder | ID: 22236523160215921 | Parent ID: 18295873486379224 | Type: DIRECTORY | FileRecord: null
+ Name:             New Text Document.txt | ID: 4222124650927020 | Parent ID: 22236523160215921 | Type: FILE | FileRecord: atlas.FileRecord@10bbd20a
+ Name:     randomtext doc1.txt | ID: 10977524091761252 | Parent ID: 7318349394726254 | Type: FILE | FileRecord: atlas.FileRecord@48503868
+ Name:     testdoc12.txt | ID: 3096224744065219 | Parent ID: 7318349394726254 | Type: FILE | FileRecord: atlas.FileRecord@6895a785
 
-Scanning Finished!
 
-Scan result :-
-Files found: 3
-Folders found: 4
-Skipped: 0
+
+childnodee: test2
+currentnodee: testfoldr12
+in while loop...
+currentnodee: testfoldr12
+actualParentPathh: C:\Users\asbia\Downloads\mealzz\another folder2
+actualParentIdd -> testfoldr12 ka id: 7318349394726254
+for comparison if -> currentNode.getIdd() : 18295873486379224
+removing childnode: test2from oldparentt: testfoldr12
+setting actualparentidd to childnode...
+adding childnode: test2from newparentt: another folder2
+Successfully reconciled node: testfoldr12
+childnodee: test2
+currentnodee: another folder2
+in while loop...
+currentnodee: another folder2
+actualParentPathh: C:\Users\asbia\Downloads\mealzz\another folder2
+actualParentIdd -> testfoldr12 ka id: 7318349394726254
+for comparison if -> currentNode.getIdd() : 7318349394726254
+in comparison if -> currentNode.getIdd() : 7318349394726254
+in while loop...
+currentnodee: another folder2
+actualParentPathh: C:\Users\asbia\Downloads\mealzz
+actualParentIdd -> testfoldr12 ka id: 4222124650947523
+for comparison if -> currentNode.getIdd() : 7318349394726254
+Actual parent not found in index. Rescan required.
+childnodee: test2
+currentnodee: another folder2
+in while loop...
+currentnodee: another folder2
+actualParentPathh: C:\Users\asbia\Downloads\mealzz\another folder2
+actualParentIdd -> testfoldr12 ka id: 7318349394726254
+for comparison if -> currentNode.getIdd() : 7318349394726254
+in comparison if -> currentNode.getIdd() : 7318349394726254
+in while loop...
+currentnodee: another folder2
+actualParentPathh: C:\Users\asbia\Downloads\mealzz
+actualParentIdd -> testfoldr12 ka id: 4222124650947523
+for comparison if -> currentNode.getIdd() : 7318349394726254
+Actual parent not found in index. Rescan required.
+childnodee: New Text Document.txt
+currentnodee: testmovefolder
+in while loop...
+currentnodee: testmovefolder
+actualParentPathh: C:\Users\asbia\Downloads\mealzz\another folder2\testfoldr12
+actualParentIdd -> testfoldr12 ka id: 18295873486379224
+for comparison if -> currentNode.getIdd() : 22236523160215921
+removing childnode: New Text Document.txtfrom oldparentt: testmovefolder
+setting actualparentidd to childnode...
+adding childnode: New Text Document.txtfrom newparentt: testfoldr12
+Successfully reconciled node: testmovefolder
+childnodee: New Text Document.txt
+currentnodee: testfoldr12
+in while loop...
+currentnodee: testfoldr12
+actualParentPathh: C:\Users\asbia\Downloads\mealzz\another folder2\testfoldr12
+actualParentIdd -> testfoldr12 ka id: 18295873486379224
+for comparison if -> currentNode.getIdd() : 18295873486379224
+in comparison if -> currentNode.getIdd() : 18295873486379224
+in while loop...
+currentnodee: testfoldr12
+actualParentPathh: C:\Users\asbia\Downloads\mealzz\another folder2
+actualParentIdd -> testfoldr12 ka id: 7318349394726254
+for comparison if -> currentNode.getIdd() : 18295873486379224
+removing childnode: New Text Document.txtfrom oldparentt: testfoldr12
+setting actualparentidd to childnode...
+adding childnode: New Text Document.txtfrom newparentt: another folder2
+Successfully reconciled node: testfoldr12
+childnodee: New Text Document.txt
+currentnodee: another folder2
+in while loop...
+currentnodee: another folder2
+actualParentPathh: C:\Users\asbia\Downloads\mealzz\another folder2\testfoldr12
+actualParentIdd -> testfoldr12 ka id: 18295873486379224
+for comparison if -> currentNode.getIdd() : 7318349394726254
+removing childnode: New Text Document.txtfrom oldparentt: another folder2
+setting actualparentidd to childnode...
+adding childnode: New Text Document.txtfrom newparentt: testfoldr12
+Successfully reconciled node: another folder2
+childnodee: test2
+currentnodee: another folder2
+in while loop...
+currentnodee: another folder2
+actualParentPathh: C:\Users\asbia\Downloads\mealzz\another folder2
+actualParentIdd -> testfoldr12 ka id: 7318349394726254
+for comparison if -> currentNode.getIdd() : 7318349394726254
+in comparison if -> currentNode.getIdd() : 7318349394726254
+in while loop...
+currentnodee: another folder2
+actualParentPathh: C:\Users\asbia\Downloads\mealzz
+actualParentIdd -> testfoldr12 ka id: 4222124650947523
+for comparison if -> currentNode.getIdd() : 7318349394726254
+Actual parent not found in index. Rescan required.
+childnodee: test2
+currentnodee: another folder2
+in while loop...
+currentnodee: another folder2
+actualParentPathh: C:\Users\asbia\Downloads\mealzz\another folder2
+actualParentIdd -> testfoldr12 ka id: 7318349394726254
+for comparison if -> currentNode.getIdd() : 7318349394726254
+in comparison if -> currentNode.getIdd() : 7318349394726254
+in while loop...
+currentnodee: another folder2
+actualParentPathh: C:\Users\asbia\Downloads\mealzz
+actualParentIdd -> testfoldr12 ka id: 4222124650947523
+for comparison if -> currentNode.getIdd() : 7318349394726254
+Actual parent not found in index. Rescan required.
+childnodee: test2
+currentnodee: another folder2
+in while loop...
+currentnodee: another folder2
+actualParentPathh: C:\Users\asbia\Downloads\mealzz\another folder2
+actualParentIdd -> testfoldr12 ka id: 7318349394726254
+for comparison if -> currentNode.getIdd() : 7318349394726254
+in comparison if -> currentNode.getIdd() : 7318349394726254
+in while loop...
+currentnodee: another folder2
+actualParentPathh: C:\Users\asbia\Downloads\mealzz
+actualParentIdd -> testfoldr12 ka id: 4222124650947523
+for comparison if -> currentNode.getIdd() : 7318349394726254
+Actual parent not found in index. Rescan required.
+childnodee: randomtext doc1.txt
+currentnodee: another folder2
+in while loop...
+currentnodee: another folder2
+actualParentPathh: C:\Users\asbia\Downloads\mealzz\another folder2\test2\test2.1
+actualParentIdd -> testfoldr12 ka id: 8444249301586758
+for comparison if -> currentNode.getIdd() : 7318349394726254
+removing childnode: randomtext doc1.txtfrom oldparentt: another folder2
+setting actualparentidd to childnode...
+adding childnode: randomtext doc1.txtfrom newparentt: test2.1
+Successfully reconciled node: another folder2
+childnodee: randomtext doc1.txt
+currentnodee: test2.1
+in while loop...
+currentnodee: test2.1
+actualParentPathh: C:\Users\asbia\Downloads\mealzz\another folder2\test2\test2.1
+actualParentIdd -> testfoldr12 ka id: 8444249301586758
+for comparison if -> currentNode.getIdd() : 8444249301586758
+in comparison if -> currentNode.getIdd() : 8444249301586758
+in while loop...
+currentnodee: test2.1
+actualParentPathh: C:\Users\asbia\Downloads\mealzz\another folder2\test2
+actualParentIdd -> testfoldr12 ka id: 39125021762832287
+for comparison if -> currentNode.getIdd() : 8444249301586758
+removing childnode: randomtext doc1.txtfrom oldparentt: test2.1
+setting actualparentidd to childnode...
+adding childnode: randomtext doc1.txtfrom newparentt: test2
+Successfully reconciled node: test2.1
+childnodee: randomtext doc1.txt
+currentnodee: test2
+in while loop...
+currentnodee: test2
+actualParentPathh: C:\Users\asbia\Downloads\mealzz\another folder2\test2\test2.1
+actualParentIdd -> testfoldr12 ka id: 8444249301586758
+for comparison if -> currentNode.getIdd() : 39125021762832287
+removing childnode: randomtext doc1.txtfrom oldparentt: test2
+setting actualparentidd to childnode...
+adding childnode: randomtext doc1.txtfrom newparentt: test2.1
+Successfully reconciled node: test2
+
+
+
+ Name: another folder2 | ID: 7318349394726254 | Parent ID: 4222124650947523 | Type: DIRECTORY | FileRecord: null
+ Name:     test2 | ID: 39125021762832287 | Parent ID: 7318349394726254 | Type: DIRECTORY | FileRecord: null
+ Name:         test2.1 | ID: 8444249301586758 | Parent ID: 39125021762832287 | Type: DIRECTORY | FileRecord: null
+ Name:             randomtext doc1.txt | ID: 10977524091761252 | Parent ID: 8444249301586758 | Type: FILE | FileRecord: atlas.FileRecord@48503868
+ Name:     testfoldr12 | ID: 18295873486379224 | Parent ID: 7318349394726254 | Type: DIRECTORY | FileRecord: null
+ Name:         New Text Document.txt | ID: 4222124650927020 | Parent ID: 18295873486379224 | Type: FILE | FileRecord: atlas.FileRecord@10bbd20a
+ Name:         testmovefolder | ID: 22236523160215921 | Parent ID: 18295873486379224 | Type: DIRECTORY | FileRecord: null
+ Name:     testdoc12.txt | ID: 3096224744065219 | Parent ID: 7318349394726254 | Type: FILE | FileRecord: atlas.FileRecord@6895a785
+
+
 
 ==============INDEX MENU===============
+
+update index
+about index
+delete index
+main menu
+
+Enter command:
+
+
 
 
     }

@@ -50,6 +50,10 @@ public class UsnRecord {
     }
 
 
+    public Path getFullPath() {
+        return path;
+    }
+
     public long getFileRef() {
         return fileRef;
     }
@@ -82,7 +86,9 @@ public String toString() {
            "\nModified At: " + modifiedAt +
            "\nExtension: " + extension +
            "\nReason: " + reason +
-           "\nChange Type: " + changeType;
+           "\nChange Type: " + changeType +
+           "\nFile id: " + fileRef + 
+           "\nParent File id: " + parentFileRef;
 }
 
 
