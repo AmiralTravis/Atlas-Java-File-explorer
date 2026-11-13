@@ -2,6 +2,7 @@ package atlas.usn;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 import atlas.AtlasState;
 import atlas.scanner.FileSystemNode;
@@ -12,9 +13,9 @@ public class UpdateIndex {
     
     static void updateIndexByUsn(UsnUpdateRecords updateRecord, AtlasState state) {
 
-        // System.out.println("\n\n");
-        // state.atlasIndex.printTree();
-        // System.out.println("\n\n");
+        System.out.println("\n\n");
+        state.atlasIndex.printTree();
+        System.out.println("\n\n");
 
         for (UsnRecord usnUpdateRecord : updateRecord.UsnUpdateRecordsList) {
 
@@ -23,7 +24,7 @@ public class UpdateIndex {
             }
 
             else if (usnUpdateRecord.getChangeType().equals("Deleted file")) {
-                deleteFileUpdation(state);
+                deleteFileUpdation(usnUpdateRecord, state);
             }
 
             else if (usnUpdateRecord.getChangeType().equals("Renamed file")) {
@@ -41,9 +42,9 @@ public class UpdateIndex {
         }
 
 
-        // System.out.println("\n\n");
-        // state.atlasIndex.printTree();
-        // System.out.println("\n\n");
+        System.out.println("\n\n");
+        state.atlasIndex.printTree();
+        System.out.println("\n\n");
 
         try {
 
@@ -68,8 +69,32 @@ public class UpdateIndex {
         System.out.println("dummy new file updation logic");
     }
 
-    static void deleteFileUpdation(AtlasState state) {
-        System.out.println("dummy delete file updation logic");
+
+    static void deleteFileUpdation(
+        UsnRecord record,
+        AtlasState state
+    ) {
+
+        Index atlasIndex = state.atlasIndex;
+
+        // Get file ID from USN record
+        Long fileId = record.getFileRef();
+
+        // Find matching node in index
+        FileSystemNode node = atlasIndex.getNode(fileId);
+
+        if (node == null) {
+            // System.out.println("Deleted file not found in index: " + fileId);
+            return;
+        }
+
+        System.out.println("Deleting node: " + node.getName()
+            + " | ID: " + node.getId());
+
+        // Recursively delete node, its children,
+        // and remove it from its parent's children.
+        deleteNodeRecursively(atlasIndex, node);
+
     }
 
 
@@ -134,11 +159,41 @@ public class UpdateIndex {
         
     }
 
-
-
-
     
     static void updateFileUpdation(AtlasState state) {
         System.out.println("dummy update file updation logic");
     }
+
+
+    // helper methods:
+
+    private static void deleteNodeRecursively(
+        Index atlasIndex,
+        FileSystemNode node) {
+
+        // Delete all children first
+        for (FileSystemNode child :
+                new ArrayList<>(node.getChildren().values())) {
+
+            deleteNodeRecursively(atlasIndex, child);
+        }
+
+        // Remove node from its parent's children
+        FileSystemNode parent =
+            atlasIndex.getNode(node.getParentId());
+
+        if (parent != null) {
+            parent.removeChild(node);
+        }
+
+        // Remove node from global ID lookup
+        atlasIndex.getNodesById().remove(node.getId());
+
+        // If it is a root node, remove it from rootNodes too
+        atlasIndex.getRootNodes().remove(node);
+    }
+
+
+
+
 }
