@@ -24,7 +24,8 @@ public class UsnVolume {
         long lastProcessedUsn = atlasIndex.lastProcessedUsn;
 
         // -read usn and get records
-        UsnUpdateRecords updateRecord = ReadUsn.getUsnUpdates(targetDirectoryStrings, lastProcessedUsn);
+        UsnUpdateRecords updateRecord = ReadUsn.getUsnUpdates(
+            targetDirectoryStrings, lastProcessedUsn, atlasIndex);
 
         System.out.println("final rezzult: ");
 
