@@ -36,12 +36,24 @@ public class UsnRecord {
                 String reason, String changeType,
                 long fileRef, long parentFileRef) {
 
-        this.name = path.getFileName().toString();
+        this.name = path != null && path.getFileName() != null
+            ? path.getFileName().toString()
+            : null;
         this.path = path;
-        this.size = attributes.size();
-        this.createdAt = attributes.creationTime().toMillis();
-        this.modifiedAt = attributes.lastModifiedTime().toMillis();
-        this.extension = getExtension(this.name);
+        this.size = attributes != null
+            ? attributes.size()
+            : 0;
+        this.createdAt = attributes != null
+            && attributes.creationTime() != null
+                ? attributes.creationTime().toMillis()
+                : 0L;
+        this.modifiedAt = attributes != null
+            && attributes.lastModifiedTime() != null
+                ? attributes.lastModifiedTime().toMillis()
+                : 0L;
+        this.extension = this.name != null
+            ? getExtension(this.name)
+            : null;
         this.reason = reason;
         this.changeType = changeType;
         

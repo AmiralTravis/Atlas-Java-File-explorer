@@ -20,6 +20,8 @@ import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
 
+import atlas.scanner.Index;
+
 
 public class ReadUsn {
 
@@ -99,7 +101,8 @@ public class ReadUsn {
 
     public static UsnUpdateRecords getUsnUpdates(
         ArrayList<String> targetDirectories,
-        long lastProcessedUsn
+        long lastProcessedUsn,
+        Index atlasIndex
     ) {
 
         System.out.println("Proceeding to open volume");
@@ -122,7 +125,7 @@ public class ReadUsn {
 
         // System.out.println("Accessing usn records...");
         UsnUpdateRecords updateRecord = accessAndReturnUsnRecords(
-            targetDirectories, handle, data, lastProcessedUsn);
+            targetDirectories, handle, data, lastProcessedUsn, atlasIndex);
 
         // System.out.println("Accessed usn records successfully\n");
 
@@ -229,13 +232,11 @@ public class ReadUsn {
 
     static UsnUpdateRecords accessAndReturnUsnRecords(
         ArrayList<String> targetDirectories,
-        WinNT.HANDLE handle, USN_JOURNAL_DATA_V0 journalData,
-        long lastProcessedUsn
+        WinNT.HANDLE handle,
+        USN_JOURNAL_DATA_V0 journalData,
+        long lastProcessedUsn,
+        Index atlasIndex
     ) {
-
-
-
-    
         // long lastProcessedUsn = 20781506728L; //old
         // long lastProcessedUsn = 20786679512L; //new
 
@@ -303,7 +304,7 @@ public class ReadUsn {
 
 
         UsnUpdateRecords updateRecord = ParseUsn.parseAndReturnUsnRecords(
-            targetDirectories, outputBuffer, bytes, handle
+            targetDirectories, outputBuffer, bytes, handle, atlasIndex
         );
 
         if (bytes >= 8) {

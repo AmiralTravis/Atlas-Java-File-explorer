@@ -12,9 +12,9 @@ public class UpdateIndex {
     
     static void updateIndexByUsn(UsnUpdateRecords updateRecord, AtlasState state) {
 
-        System.out.println("\n\n");
-        state.atlasIndex.printTree();
-        System.out.println("\n\n");
+        // System.out.println("\n\n");
+        // state.atlasIndex.printTree();
+        // System.out.println("\n\n");
 
         for (UsnRecord usnUpdateRecord : updateRecord.UsnUpdateRecordsList) {
 
@@ -41,9 +41,9 @@ public class UpdateIndex {
         }
 
 
-        System.out.println("\n\n");
-        state.atlasIndex.printTree();
-        System.out.println("\n\n");
+        // System.out.println("\n\n");
+        // state.atlasIndex.printTree();
+        // System.out.println("\n\n");
 
         try {
 

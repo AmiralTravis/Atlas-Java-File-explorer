@@ -19,6 +19,8 @@ import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
 
+import atlas.scanner.Index;
+import atlas.scanner.FileSystemNode;
 
 public class ParseUsn {
     
@@ -26,8 +28,12 @@ public class ParseUsn {
 
 
 static UsnUpdateRecords parseAndReturnUsnRecords(
-        ArrayList<String> targetDirectories,
-        Memory buffer, int bytesReturned, WinNT.HANDLE volumeHandle) {
+    ArrayList<String> targetDirectories,
+    Memory buffer,
+    int bytesReturned,
+    WinNT.HANDLE volumeHandle,
+    Index atlasIndex
+) {
 
 
 
@@ -89,6 +95,41 @@ static UsnUpdateRecords parseAndReturnUsnRecords(
 
             if (fullPath == null || fullPath.isBlank()) {
                 fullPath = "Unable to find";
+            }
+
+            // DELETE HANDLING
+
+            if (
+                (
+                    fullPath.equals("Unable to find") &&
+                    decodedReason.contains("FILE_DELETE")
+                )   
+                ||
+                (
+                    decodedReason.contains("RENAME") &&
+                    fullPath.startsWith("\\\\?\\C:\\$Recycle.Bin")
+                )
+            ) {
+
+                FileSystemNode existingNode = atlasIndex.getNode(fileRef);
+
+                if (existingNode != null) {
+
+                    UsnRecord record = new UsnRecord(
+                        null,
+                        null,
+                        decodedReason,
+                        "Deleted file",
+                        fileRef,
+                        parentFileRef
+                    );
+
+                    updates.addRecord(record);
+                }
+
+                // Do not continue with normal attribute reading.
+                offset = (offset + length + 7) & ~7L;
+                continue;
             }
 
             
