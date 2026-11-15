@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +22,31 @@ public class FileScanner {
 
         try {
 
-            for (Path path : paths) {
+            List<Path> filteredPaths = new ArrayList<>();
+
+            List<Path> sortedPaths = paths.stream()
+                .map(p -> p.toAbsolutePath().normalize())
+                .sorted((a, b) -> Integer.compare(
+                    a.getNameCount(),
+                    b.getNameCount()
+                ))
+                .toList();
+
+            for (Path path : sortedPaths) {
+
+                boolean alreadyCovered = filteredPaths.stream()
+                    .anyMatch(existing -> path.startsWith(existing));
+
+                if (!alreadyCovered) {
+                    filteredPaths.add(path);
+                }
+            }
+
+
+            System.out.println("pathss: " + paths);
+            System.out.println("filteresPathss: " + filteredPaths);
+
+            for (Path path : filteredPaths) {
 
                 Map<Path, Long> directoryIds = new HashMap<>();
 
@@ -68,7 +93,6 @@ public class FileScanner {
                                 atlasIndex.addNode(node, parentId);
                             }
 
-                            atlasIndex.addFolder(directory);
 
                             return FileVisitResult.CONTINUE;
                         }
@@ -109,8 +133,6 @@ public class FileScanner {
                             node.setFileRecord(record);
 
                             atlasIndex.addNode(node, parentId);
-
-                            atlasIndex.addFile(record);
 
                             return FileVisitResult.CONTINUE;
                         }

@@ -299,7 +299,7 @@ public class UpdateIndex {
 
 
 
-    static void restoreFileUpdation(
+    private static void restoreFileUpdation(
         UsnRecord record,
         AtlasState state
     ) {
@@ -356,7 +356,6 @@ public class UpdateIndex {
                         );
 
                         index.addNode(node, parentId);
-                        // index.addFolder(directory);
 
                         return FileVisitResult.CONTINUE;
                     }
@@ -390,7 +389,6 @@ public class UpdateIndex {
                         node.setFileRecord(fileRecord);
 
                         index.addNode(node, parentId);
-                        // index.addFile(fileRecord);
 
                         return FileVisitResult.CONTINUE;
                     }
