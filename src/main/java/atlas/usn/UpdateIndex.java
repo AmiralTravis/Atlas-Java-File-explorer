@@ -1,10 +1,14 @@
 package atlas.usn;
 
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import atlas.AtlasState;
 import atlas.FileRecord;
@@ -16,9 +20,9 @@ public class UpdateIndex {
     
     static void updateIndexByUsn(UsnUpdateRecords updateRecord, AtlasState state) {
 
-        System.out.println("\n\n");
-        state.atlasIndex.printTree();
-        System.out.println("\n\n");
+        // System.out.println("\n\n");
+        // state.atlasIndex.printTree();
+        // System.out.println("\n\n");
 
         for (UsnRecord usnUpdateRecord : updateRecord.UsnUpdateRecordsList) {
 
@@ -45,9 +49,9 @@ public class UpdateIndex {
         }
 
 
-        System.out.println("\n\n");
-        state.atlasIndex.printTree();
-        System.out.println("\n\n");
+        // System.out.println("\n\n");
+        // state.atlasIndex.printTree();
+        // System.out.println("\n\n");
 
         try {
 
@@ -173,8 +177,8 @@ public class UpdateIndex {
             return;
         }
 
-        System.out.println("Deleting node: " + node.getName()
-            + " | ID: " + node.getId());
+        // System.out.println("Deleting node: " + node.getName()
+        //     + " | ID: " + node.getId());
 
         // Recursively delete node, its children,
         // and remove it from its parent's children.
@@ -194,7 +198,7 @@ public class UpdateIndex {
 
         if (currentNode == null) {
             // handles rename from recylce bin to targetDir case (undo deletion case)
-            newFileUpdation(record, state);
+            restoreFileUpdation(record, state);
             return;
         }
 
@@ -288,6 +292,133 @@ public class UpdateIndex {
 
         // If it is a root node, remove it from rootNodes too
         atlasIndex.getRootNodes().remove(node);
+    }
+
+
+
+
+
+
+    static void restoreFileUpdation(
+        UsnRecord record,
+        AtlasState state
+    ) {
+
+        Index index = state.atlasIndex;
+
+        Path path = record.getFullPath();
+
+        if (path == null || !Files.exists(path)) {
+            return;
+        }
+
+        long rootId = record.getFileRef();
+        long rootParentId = record.getParentFileRef();
+
+        // The parent must already exist in the index.
+        // if (index.getNode(rootParentId) == null) {
+        //     System.out.println("Restore failed: parent node not found.");
+        //     return;
+        // }
+
+        // Maps directory paths to their IDs during traversal.
+        Map<Path, Long> directoryIds = new HashMap<>();
+
+        try {
+
+            Files.walkFileTree(
+                path,
+                new SimpleFileVisitor<Path>() {
+
+                    @Override
+                    public FileVisitResult preVisitDirectory(
+                        Path directory,
+                        BasicFileAttributes attributes
+                    ) {
+
+                        long directoryId = directory.equals(path)
+                            ? rootId
+                            : ReadUsn.getFileId(directory);
+
+                        long parentId = directory.equals(path)
+                            ? rootParentId
+                            : directoryIds.get(directory.getParent());
+
+                        directoryIds.put(directory, directoryId);
+
+                        FileSystemNode node = new FileSystemNode(
+                            directoryId,
+                            parentId,
+                            directory.getFileName() == null
+                                ? directory.toString()
+                                : directory.getFileName().toString(),
+                            FileSystemNode.NodeType.DIRECTORY
+                        );
+
+                        index.addNode(node, parentId);
+                        // index.addFolder(directory);
+
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult visitFile(
+                        Path file,
+                        BasicFileAttributes attributes
+                    ) {
+
+                        long fileId = file.equals(path)
+                            ? rootId
+                            : ReadUsn.getFileId(file);
+
+                        long parentId = file.equals(path)
+                            ? rootParentId
+                            : directoryIds.get(file.getParent());
+
+                        FileRecord fileRecord = new FileRecord(
+                            file,
+                            attributes
+                        );
+
+                        FileSystemNode node = new FileSystemNode(
+                            fileId,
+                            parentId,
+                            file.getFileName().toString(),
+                            FileSystemNode.NodeType.FILE
+                        );
+
+                        node.setFileRecord(fileRecord);
+
+                        index.addNode(node, parentId);
+                        // index.addFile(fileRecord);
+
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult visitFileFailed(
+                        Path file,
+                        IOException exception
+                    ) {
+
+                        System.err.println(
+                            "Could not restore: " + file
+                            + " — " + exception.getMessage()
+                        );
+
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                }
+            );
+
+        } catch (IOException e) {
+
+            System.err.println(
+                "Could not restore filesystem subtree: " + path
+            );
+
+            e.printStackTrace();
+        }
     }
 
 
