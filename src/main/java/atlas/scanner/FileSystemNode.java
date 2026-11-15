@@ -90,22 +90,33 @@ public class FileSystemNode implements Serializable {
         child.setParentId(this.id);
     }
 
-    public FileSystemNode removeChild(String childName) {
-        FileSystemNode child = children.remove(childName);
-
-        if (child != null) {
-            child.setParentId(-1L);
-        }
-
-        return child;
-    }
 
     public void removeChild(FileSystemNode child) {
-        removeChild(child.getName());
+
+        children.remove(child.getName());
+
     }
 
     public void setType(NodeType type) {
         this.type = type;
     }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("{\n");
+
+        children.forEach((key, value) ->
+            sb.append("\t")
+            .append(key)
+            .append("\t=\t")
+            .append(value)
+            .append(",\n")
+        );
+
+        sb.append("}");
+        return sb.toString();
+    }
+
 
 }

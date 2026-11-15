@@ -1,10 +1,13 @@
 package atlas.usn;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 
 import atlas.AtlasState;
+import atlas.FileRecord;
 import atlas.scanner.FileSystemNode;
 import atlas.scanner.Index;
 import atlas.scanner.IndexStore;
@@ -20,7 +23,7 @@ public class UpdateIndex {
         for (UsnRecord usnUpdateRecord : updateRecord.UsnUpdateRecordsList) {
 
             if (usnUpdateRecord.getChangeType().equals("New file")) {
-                newFileUpdation(state);
+                newFileUpdation(usnUpdateRecord, state);
             }
 
             else if (usnUpdateRecord.getChangeType().equals("Deleted file")) {
@@ -65,8 +68,90 @@ public class UpdateIndex {
         
     }
 
-    static void newFileUpdation(AtlasState state) {
-        System.out.println("dummy new file updation logic");
+    static void newFileUpdation(
+        UsnRecord record,
+        AtlasState state
+    ) {
+
+        Index atlasIndex = state.atlasIndex;
+
+        // 1. Get file and parent IDs
+        long fileId = record.getFileRef();
+        long parentId = record.getParentFileRef();
+
+        // 2. Check if node already exists
+        if (atlasIndex.getNode(fileId) != null) {
+            return;
+        }
+
+        // 3. Find parent node
+        FileSystemNode parentNode = atlasIndex.getNode(parentId);
+
+        if (parentNode == null) {
+            System.out.println(
+                "Parent node not found. Cannot add: " + record.getFullPath()
+            );
+            return;
+        }
+
+        // 4. Get actual path
+        Path path = record.getFullPath();
+
+        if (path == null) {
+            return;
+        }
+
+        try {
+
+            // 5. Read file attributes
+            BasicFileAttributes attributes =
+                Files.readAttributes(path, BasicFileAttributes.class);
+
+            // 6. Determine node type
+            boolean isDirectory = attributes.isDirectory();
+
+            FileSystemNode.NodeType nodeType = isDirectory
+                ? FileSystemNode.NodeType.DIRECTORY
+                : FileSystemNode.NodeType.FILE;
+
+            // 7. Create node
+            FileSystemNode newNode = new FileSystemNode(
+                fileId,
+                parentId,
+                path.getFileName().toString(),
+                nodeType
+            );
+
+            // 8. Construct FileRecord only for files
+            if (!isDirectory) {
+
+                FileRecord fileRecord = new FileRecord(
+                    path,
+                    attributes
+                );
+
+                newNode.setFileRecord(fileRecord);
+
+            }
+
+            // 9. Add node to parent's children and nodesById
+            atlasIndex.addNode(newNode, parentId);
+
+            // System.out.println(
+            //     "Added node: " + newNode.getName()
+            //     + " | ID: " + fileId
+            //     + " | Parent ID: " + parentId
+            //     + " | Type: " + nodeType
+            // );
+
+        } catch (IOException e) {
+
+            System.out.println(
+                "Could not create index node for: " + path
+            );
+
+            e.printStackTrace();
+        }
     }
 
 
@@ -108,6 +193,8 @@ public class UpdateIndex {
         FileSystemNode currentNode = index.getNode(record.getFileRef());
 
         if (currentNode == null) {
+            // handles rename from recylce bin to targetDir case (undo deletion case)
+            newFileUpdation(record, state);
             return;
         }
 
@@ -117,7 +204,17 @@ public class UpdateIndex {
         String actualName = actualPath.getFileName().toString();
 
         if (!currentNode.getName().equals(actualName)) {
+            FileSystemNode parent = index.getNode(currentNode.getParentId());
+
+            if (parent != null) {
+                parent.removeChild(currentNode);
+            }
+
             currentNode.setName(actualName);
+
+            if (parent != null) {
+                parent.addChild(currentNode);
+            }
         }
 
         // 2. Move to its parent node logic.
@@ -129,7 +226,6 @@ public class UpdateIndex {
         Path actualParentPath = actualPath.getParent();
 
         if (actualParentPath == null) {
-            // break;
             return;
         }
 
@@ -161,7 +257,8 @@ public class UpdateIndex {
 
     
     static void updateFileUpdation(AtlasState state) {
-        System.out.println("dummy update file updation logic");
+        // System.out.println("dummy update file updation logic");
+        // Do nothing for now
     }
 
 
