@@ -1,13 +1,7 @@
-===10:46pm 13-11-2026===
+===10:49pm 15-11-2026===
 ===final test case before commit===
 ===case description : {
-    first successful delete usn record index updation success
-
-    note : when we delete and undo, the file comes back from recycle bin, tht doest get detected 
-    as the usn records are only updation records for it... we would later make a separate case 
-    for it, where we would rebuild rename_old old path, and check weather the path starts with 
-    recycle bin, if yes, we would treat tht as a special case of undo, and build and carry on
-    tht usn record as a new file record, to somehow add the record back to index
+    updated the undo deletion special case, to support undo deletion of folders as well.
 }===
 
 
@@ -24,19 +18,10 @@
  Name:                 test2.1 | ID: 8444249301586758 | Parent ID: 39125021762832287 | Type: DIRECTORY | FileRecord: null
  Name:                     randomtext doc1.txt | ID: 10977524091761252 | Parent ID: 8444249301586758 | Type: FILE | FileRecord: atlas.FileRecord@184f6be2
  Name:             tusf1 | ID: 17732923532966039 | Parent ID: 22236523160215921 | Type: DIRECTORY | FileRecord: null
- Name:                 tusf2 | ID: 107241966126926970 | Parent ID: 17732923532966039 | Type: DIRECTORY | FileRecord: null
- Name:                     tusf3 | ID: 5348024557698622 | Parent ID: 107241966126926970 | Type: DIRECTORY | FileRecord: null
- Name:                         New Text Document1.txt | ID: 25051272927297303 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@56aac163
- Name:                         New Text Document2.txt | ID: 121034239985629159 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@1f7030a6
- Name:                         New Text Document3.txt | ID: 90916417477631759 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@5a1c0542
- Name:                         tusfText.txt | ID: 13792273858909928 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@396f6598
- Name:     testdoc12.txt | ID: 3096224744065219 | Parent ID: 7318349394726254 | Type: FILE | FileRecord: atlas.FileRecord@394e1a0f
+ Name:     testdoc12.txt | ID: 3096224744065219 | Parent ID: 7318349394726254 | Type: FILE | FileRecord: atlas.FileRecord@27a5f880
 
 
 
-Deleting node: New Text Document3.txt | ID: 90916417477631759
-Deleted file not found in index: 90916417477631759
-Deleted file not found in index: 90916417477631759
 
 
 
@@ -50,46 +35,14 @@ Deleted file not found in index: 90916417477631759
  Name:             tusf1 | ID: 17732923532966039 | Parent ID: 22236523160215921 | Type: DIRECTORY | FileRecord: null
  Name:                 tusf2 | ID: 107241966126926970 | Parent ID: 17732923532966039 | Type: DIRECTORY | FileRecord: null
  Name:                     tusf3 | ID: 5348024557698622 | Parent ID: 107241966126926970 | Type: DIRECTORY | FileRecord: null
- Name:                         New Text Document1.txt | ID: 25051272927297303 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@56aac163
- Name:                         New Text Document2.txt | ID: 121034239985629159 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@1f7030a6
- Name:                         tusfText.txt | ID: 13792273858909928 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@396f6598
- Name:     testdoc12.txt | ID: 3096224744065219 | Parent ID: 7318349394726254 | Type: FILE | FileRecord: atlas.FileRecord@394e1a0f
+ Name:                         New Text Document4.txt | ID: 104427216359712346 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@33723e30
+ Name:                         tusftExt.txt | ID: 13792273858909928 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@64f6106c
+ Name:                         New Text Document1.txt | ID: 25051272927297303 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@553a3d88
+ Name:                         New Text Document2.txt | ID: 121034239985629159 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@7a30d1e6
+ Name:                         New Text Document3.txt | ID: 90916417477631759 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@5891e32e
+ Name:     testdoc12.txt | ID: 3096224744065219 | Parent ID: 7318349394726254 | Type: FILE | FileRecord: atlas.FileRecord@27a5f880
 
 
-
-
-    },
-    {
-        
-
-
- Name: another folder2 | ID: 7318349394726254 | Parent ID: 4222124650947523 | Type: DIRECTORY | FileRecord: null
- Name:     testfoldr12 | ID: 18295873486379224 | Parent ID: 7318349394726254 | Type: DIRECTORY | FileRecord: null
- Name:         New Text Document.txt | ID: 4222124650927020 | Parent ID: 18295873486379224 | Type: FILE | FileRecord: atlas.FileRecord@6895a785
- Name:         testmovefolder | ID: 22236523160215921 | Parent ID: 18295873486379224 | Type: DIRECTORY | FileRecord: null
- Name:             test2 | ID: 39125021762832287 | Parent ID: 22236523160215921 | Type: DIRECTORY | FileRecord: null
- Name:                 test2.1 | ID: 8444249301586758 | Parent ID: 39125021762832287 | Type: DIRECTORY | FileRecord: null
- Name:                     randomtext doc1.txt | ID: 10977524091761252 | Parent ID: 8444249301586758 | Type: FILE | FileRecord: atlas.FileRecord@184f6be2
- Name:             tusf1 | ID: 17732923532966039 | Parent ID: 22236523160215921 | Type: DIRECTORY | FileRecord: null
- Name:                 tusf2 | ID: 107241966126926970 | Parent ID: 17732923532966039 | Type: DIRECTORY | FileRecord: null
- Name:                     tusf3 | ID: 5348024557698622 | Parent ID: 107241966126926970 | Type: DIRECTORY | FileRecord: null
- Name:                         New Text Document1.txt | ID: 25051272927297303 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@56aac163
- Name:                         New Text Document2.txt | ID: 121034239985629159 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@1f7030a6
- Name:                         tusfText.txt | ID: 13792273858909928 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@396f6598
- Name:     testdoc12.txt | ID: 3096224744065219 | Parent ID: 7318349394726254 | Type: FILE | FileRecord: atlas.FileRecord@394e1a0f
-
-
-
-Deleting node: testmovefolder | ID: 22236523160215921
-Deleted file not found in index: 22236523160215921
-Deleted file not found in index: 22236523160215921
-
-
-
- Name: another folder2 | ID: 7318349394726254 | Parent ID: 4222124650947523 | Type: DIRECTORY | FileRecord: null
- Name:     testfoldr12 | ID: 18295873486379224 | Parent ID: 7318349394726254 | Type: DIRECTORY | FileRecord: null
- Name:         New Text Document.txt | ID: 4222124650927020 | Parent ID: 18295873486379224 | Type: FILE | FileRecord: atlas.FileRecord@6895a785
- Name:     testdoc12.txt | ID: 3096224744065219 | Parent ID: 7318349394726254 | Type: FILE | FileRecord: atlas.FileRecord@394e1a0f
 
     }
 ]===
