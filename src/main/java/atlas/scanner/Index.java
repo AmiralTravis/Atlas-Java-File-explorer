@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 
-import atlas.FileRecord;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,8 +12,6 @@ import java.util.Map;
 
 public class Index implements Serializable {
 
-    private ArrayList<FileRecord> fileList = new ArrayList<>();
-    private ArrayList<String> folderList = new ArrayList<>();
     private ArrayList<String> directoryList = new ArrayList<>();
 
     private Map<Long, FileSystemNode> nodesById = new HashMap<>();
@@ -30,19 +27,6 @@ public class Index implements Serializable {
 
     public long lastProcessedUsn;
 
-
-
-    void addFile(FileRecord fileRecord) {
-
-        fileList.add(fileRecord);
-
-    }
-
-    void addFolder(Path folder) {
-
-        folderList.add(folder.toString());
-
-    }
 
     void addDirectory(Path dir) {
 
