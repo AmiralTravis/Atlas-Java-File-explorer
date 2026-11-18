@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import atlas.scanner.ScanResult;
+import atlas.search.FilterState;
 import atlas.scanner.Index;
 
 public class AtlasState {
@@ -19,6 +20,7 @@ public class AtlasState {
         SCANNING,
         INDEX_MENU,
         BROWSE_MENU,
+        SEARCH_MENU,
         EXITING
     }
 
@@ -63,6 +65,8 @@ public class AtlasState {
     public ArrayList<String> currentCommands = new ArrayList<>(List.of("exit"));
 
     public List<Path> tempPaths = new ArrayList<Path>();
+
+    public FilterState currentFilters = new FilterState();
 
 }
 

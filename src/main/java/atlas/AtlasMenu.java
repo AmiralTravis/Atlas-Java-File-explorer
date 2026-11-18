@@ -4,6 +4,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import atlas.search.FilterState;
+
 class AtlasMenu {
 
 
@@ -43,6 +45,7 @@ class AtlasMenu {
                     Select mode:
 
                     browse
+                    search
                     index
                     
                     Enter command:
@@ -50,6 +53,7 @@ class AtlasMenu {
             
             state.currentCommands = new ArrayList<>(List.of(
                 "browse",
+                "search",
                 "index"
             ));
 
@@ -289,6 +293,34 @@ class AtlasMenu {
             state.currentCommands = new ArrayList<>(List.of(
                 "progress",
                 "cancel"
+            ));
+
+            return message;
+        
+        }
+
+        else if (appState.equals(AtlasState.AppState.SEARCH_MENU)) {
+            
+            FilterState current_filters = state.currentFilters;
+
+            message = """
+                    ==============SEARCH MENU==============
+
+                    Current filters: \n""" + current_filters.toDisplayString() + """
+                    
+                    Menu Options:
+                    
+                    search by name
+                    change filters
+                    main menu
+
+                    Enter command:
+                    """;
+
+            state.currentCommands = new ArrayList<>(List.of(
+                "search by name",
+                "change filters",
+                "main menu"
             ));
 
             return message;

@@ -37,6 +37,12 @@ public class ChangeMode {
 
     }
 
+    static void searchMode(AtlasState state) {
+
+        state.currentState = AtlasState.AppState.SEARCH_MENU;
+
+    }
+
     static void updateIndexMode(AtlasState state) {
 
         state.indexState = AtlasState.IndexMenuState.UPDATE_INDEX;
