@@ -7,14 +7,14 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 import atlas.scanner.ScanUtils;
-
+import atlas.search.SearchCommands;
 
 public class CommandOps {
 
 
     static Set<String> isNonThreadOp = Set.of(
-        "show current", "parent dir", "progress", "cancel", "browse", "index",
-        "about index", "main menu", 
+        "show current", "parent dir", "progress", "cancel", "browse", "search", 
+        "search by name", "change filters", "index", "about index", "main menu", 
         "update index", "delete index", "index menu", "full rescan", "use usn", 
         "create index"
     );
@@ -162,6 +162,10 @@ public class CommandOps {
             ChangeMode.browseMode(state);
         }
 
+        else if (command.equals("search")) {
+            ChangeMode.searchMode(state);
+        }
+
         else if (command.equals("index") | command.equals("index menu")) {
             ChangeMode.indexMode(state);
         }
@@ -174,6 +178,16 @@ public class CommandOps {
 
         else if (command.equals("parent dir")) {
             DirectoryBrowser.parentDir(state);
+        }
+
+
+
+        else if (command.equals("search by name")) {
+            SearchCommands.handleSearchByName(state);
+        }
+
+        else if (command.equals("change filters")) {
+            SearchCommands.handleChangeFilters(state);
         }
 
 
