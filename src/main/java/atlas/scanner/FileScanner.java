@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-
+import atlas.AtlasState;
 import atlas.FileRecord;
 import atlas.usn.ReadUsn;
 
 public class FileScanner {
 
 
-    public static ScanResult scan(List<Path> paths, ScanResult result, Index atlasIndex) {
+    public static ScanResult scan(List<Path> paths, ScanResult result, Index atlasIndex, AtlasState state) {
 
         try {
 
@@ -44,6 +44,8 @@ public class FileScanner {
 
 
 
+            IgnoreList ignore = IgnoreList.load();
+
             for (Path path : filteredPaths) {
 
                 Map<Path, Long> directoryIds = new HashMap<>();
@@ -64,7 +66,13 @@ public class FileScanner {
                                 return FileVisitResult.TERMINATE;
                             }
 
+                            // skip ignored directories (never the scan root itself)
+                            if (!directory.equals(path) && ignore.isIgnoredDir(directory)) {
+                                return FileVisitResult.SKIP_SUBTREE;
+                            }
+
                             result.incrementFolders();
+                            state.currentScanPath = directory;
 
                             long directoryId = ReadUsn.getFileId(directory);
 
@@ -106,10 +114,19 @@ public class FileScanner {
                             }
 
                             result.incrementFiles();
+                            state.currentScanPath = file;
 
-                            long fileId = ReadUsn.getFileId(file);
+                            long fileId;
+                            long parentReferId;
 
-                            long parentReferId = ReadUsn.getParentFileId(file);
+                            try {
+                                fileId = ReadUsn.getFileId(file);
+                                parentReferId = ReadUsn.getParentFileId(file);
+                            } catch (RuntimeException e) {
+                                System.err.println("Skipping (id lookup failed): " + file + " — " + e);
+                                result.incrementSkipped();
+                                return FileVisitResult.CONTINUE;
+                            }
 
                             Long parentId = directoryIds.get(file.getParent());
 

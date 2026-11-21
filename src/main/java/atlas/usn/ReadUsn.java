@@ -397,12 +397,24 @@ public interface Kernel32Extended extends StdCallLibrary {
 }
 
 
+// Prefix with \\?\ so Windows accepts paths longer than 260 characters
+static String toWin32Path(Path path) {
+    String p = path.toAbsolutePath().normalize().toString();
+
+    if (p.startsWith("\\\\?\\")) return p;
+
+    if (p.startsWith("\\\\")) {                  // UNC path: \\server\share
+        return "\\\\?\\UNC\\" + p.substring(2);
+    }
+
+    return "\\\\?\\" + p;                        // C:\... -> \\?\C:\...
+}
 
 
 public static long getFileId(Path path) {
 
     WinNT.HANDLE handle = Kernel32.INSTANCE.CreateFile(
-        path.toAbsolutePath().toString(),
+        toWin32Path(path),
         WinNT.FILE_READ_ATTRIBUTES,
         WinNT.FILE_SHARE_READ |
         WinNT.FILE_SHARE_WRITE |

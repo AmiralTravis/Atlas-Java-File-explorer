@@ -1,0 +1,40 @@
+# Directories skipped when scanning. One entry per line.
+# A plain name (node_modules) is skipped everywhere.
+# A full path (C:\Users\me\junk) skips just that folder.
+# Reset: delete atlas.ignore and it's regenerated with the defaults on the next scan.
+
+
+# JavaScript / Node
+node_modules
+.next
+.nuxt
+bower_components
+
+# Python
+__pycache__
+.venv
+venv
+env
+.tox
+.mypy_cache
+.pytest_cache
+site-packages
+
+# Version control / IDE
+.git
+.svn
+.hg
+.idea
+.vscode
+
+# Build output
+target
+build
+dist
+out
+bin
+obj
+
+# Windows system
+$Recycle.Bin
+System Volume Information
