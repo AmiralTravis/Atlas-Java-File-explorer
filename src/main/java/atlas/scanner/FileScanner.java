@@ -43,8 +43,6 @@ public class FileScanner {
             }
 
 
-            System.out.println("pathss: " + paths);
-            System.out.println("filteresPathss: " + filteredPaths);
 
             for (Path path : filteredPaths) {
 

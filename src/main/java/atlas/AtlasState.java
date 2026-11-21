@@ -21,6 +21,7 @@ public class AtlasState {
         INDEX_MENU,
         BROWSE_MENU,
         SEARCH_MENU,
+        SEARCH_INPUT,
         EXITING
     }
 

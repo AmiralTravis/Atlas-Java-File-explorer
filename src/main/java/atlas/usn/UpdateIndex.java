@@ -8,6 +8,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import atlas.AtlasState;
@@ -214,7 +215,16 @@ public class UpdateIndex {
                 parent.removeChild(currentNode);
             }
 
+            index.removeNodeFromIndex(currentNode);
+
             currentNode.setName(actualName);
+
+            index.getNodeIdsByName()
+                .computeIfAbsent(actualName, k -> new HashSet<>())
+                .add(currentNode.getId());
+
+            index.getNodesById().put(currentNode.getId(), currentNode);
+
 
             if (parent != null) {
                 parent.addChild(currentNode);
@@ -288,7 +298,7 @@ public class UpdateIndex {
         }
 
         // Remove node from global ID lookup
-        atlasIndex.getNodesById().remove(node.getId());
+        atlasIndex.removeNodeFromIndex(node);
 
         // If it is a root node, remove it from rootNodes too
         atlasIndex.getRootNodes().remove(node);
