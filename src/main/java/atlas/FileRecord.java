@@ -38,6 +38,22 @@ public class FileRecord implements Serializable {
 
     }
 
+    public long getSize() {
+        return size;
+    }
+
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
+    public long getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
     public String getFileRecord(FileRecord file) {
         
         StringBuilder builder = new StringBuilder();

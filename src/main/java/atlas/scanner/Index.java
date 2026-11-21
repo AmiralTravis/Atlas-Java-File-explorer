@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import atlas.search.NameUtils;
+
 
 
 public class Index implements Serializable {
@@ -86,22 +88,22 @@ public class Index implements Serializable {
 
 
 
-    private void indexName(FileSystemNode node) {
+    public void indexName(FileSystemNode node) {
         nodeIdsByName
-            .computeIfAbsent(node.getName(), k -> new HashSet<>())
+            .computeIfAbsent(NameUtils.key(node), k -> new HashSet<>())
             .add(node.getId());
     }
 
 
     private void removeName(FileSystemNode node) {
-        Set<Long> ids = nodeIdsByName.get(node.getName());
+        String key = NameUtils.key(node);
+        Set<Long> ids = nodeIdsByName.get(key);
 
         if (ids != null) {
             ids.remove(node.getId());
 
             if (ids.isEmpty()) {
-                nodeIdsByName.remove(node.getName());
-    
+                nodeIdsByName.remove(key);
             }
         }
     }
@@ -111,31 +113,6 @@ public class Index implements Serializable {
         return nodeIdsByName;
     }
 
-
-
-    public Set<FileSystemNode> searchByName(String name) {
-
-        System.out.println("getnodesidbyname: " + getNodeIdsByName());
-        
-        Set<Long> ids = nodeIdsByName.get(name);
-
-        if (ids == null) {
-            return Set.of();
-        }
-
-        Set<FileSystemNode> results = new HashSet<>();
-
-        for (Long id : ids) {
-
-            FileSystemNode node = nodesById.get(id);
-
-            if (node != null) {
-                results.add(node);
-            }
-        }
-
-        return results;
-    }
 
 
 

@@ -43,6 +43,13 @@ public class CommandOps {
         }
 
 
+        if (SearchCommands.isFilterState(state.currentState)) {
+            SearchCommands.handleFilterInput(state, command);
+
+            return "";
+        }
+
+
         if (state.currentState.equals(AtlasState.AppState.PRE_SCANNING)) {
             handlePreScanCommands(command, state, executor);
 
@@ -63,7 +70,7 @@ public class CommandOps {
         }
 
         if (
-            command.equals("proceed") | command.equals("cancel")
+            (command.equals("proceed") || command.equals("cancel"))
             && !state.confState.equals(AtlasState.ConfirmationMenuState.NONE)
         ) {
             handleReconfirmation(command, state);

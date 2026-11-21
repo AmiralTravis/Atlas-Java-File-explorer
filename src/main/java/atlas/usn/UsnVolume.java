@@ -27,19 +27,20 @@ public class UsnVolume {
         UsnUpdateRecords updateRecord = ReadUsn.getUsnUpdates(
             targetDirectoryStrings, lastProcessedUsn, atlasIndex);
 
-        System.out.println("final rezzult: ");
+        // System.out.println("final rezzult: ");
 
-        for (UsnRecord record : updateRecord.getRecords()) {
-            System.out.println(record);
-            System.out.println("---------------------------");
-        }
+        // for (UsnRecord record : updateRecord.getRecords()) {
+        //     System.out.println(record);
+        //     System.out.println("---------------------------");
+        // }
 
-        System.out.println("lastProcessedUsn high level reached: " 
-        + updateRecord.getLastProcessedUsn());
+        // System.out.println("lastProcessedUsn high level reached: " 
+        // + updateRecord.getLastProcessedUsn());
 
         // -input records in index updation
 	    // ->after successful updation, save atlas index, else report error
         UpdateIndex.updateIndexByUsn(updateRecord, state);
+
 
     }
 

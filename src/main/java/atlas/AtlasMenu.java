@@ -347,6 +347,125 @@ class AtlasMenu {
 
 
 
+        else if (appState.equals(AtlasState.AppState.FILTER_MENU)) {
+
+            message = """
+                    ==============FILTER MENU==============
+
+                    Current filters: \n""" + state.currentFilters.toDisplayString() + """
+
+                    Menu Options:
+
+                    edit extensions
+                    edit date range
+                    edit file size
+                    edit directories
+                    clear all filters
+                    back
+
+                    Enter command:
+                    """;
+
+            state.currentCommands = new ArrayList<>(List.of(
+                "edit extensions",
+                "edit date range",
+                "edit file size",
+                "edit directories",
+                "clear all filters",
+                "back"
+            ));
+
+            return message;
+        }
+
+        else if (appState.equals(AtlasState.AppState.EXT_FILTER_MENU)) {
+
+            message = """
+                    ==========EXTENSION FILTER MENU========
+
+                    Current filters: \n""" + state.currentFilters.toDisplayString() + """
+
+                    Menu Options:
+
+                    add {extension}   (e.g. add pdf  or  add pdf txt docx)
+                    remove {extension}
+                    clear
+                    back
+
+                    Enter command:
+                    """;
+
+            state.currentCommands = new ArrayList<>();
+
+            return message;
+        }
+
+        else if (appState.equals(AtlasState.AppState.DATE_FILTER_MENU)) {
+
+            message = """
+                    ===========DATE RANGE FILTER MENU======
+
+                    Current filters: \n""" + state.currentFilters.toDisplayString() + """
+
+                    Menu Options:
+
+                    from {YYYY-MM-DD}
+                    to {YYYY-MM-DD}
+                    clear
+                    back
+
+                    Enter command:
+                    """;
+
+            state.currentCommands = new ArrayList<>();
+
+            return message;
+        }
+
+        else if (appState.equals(AtlasState.AppState.SIZE_FILTER_MENU)) {
+
+            message = """
+                    ===========FILE SIZE FILTER MENU=======
+
+                    Current filters: \n""" + state.currentFilters.toDisplayString() + """
+
+                    Menu Options:
+
+                    min {size}   (e.g. min 10MB)
+                    max {size}   (e.g. max 1.5GB)
+                    clear
+                    back
+
+                    Enter command:
+                    """;
+
+            state.currentCommands = new ArrayList<>();
+
+            return message;
+        }
+
+        else if (appState.equals(AtlasState.AppState.DIR_FILTER_MENU)) {
+
+            message = """
+                    ===========DIRECTORY FILTER MENU=======
+
+                    Current filters: \n""" + state.currentFilters.toDisplayString() + """
+
+                    Menu Options:
+
+                    add {full directory path}
+                    remove {full directory path}
+                    clear
+                    back
+
+                    Enter command:
+                    """;
+
+            state.currentCommands = new ArrayList<>();
+
+            return message;
+        }
+
         else {
 
             message = "invalid state";

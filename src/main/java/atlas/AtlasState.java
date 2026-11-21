@@ -22,6 +22,11 @@ public class AtlasState {
         BROWSE_MENU,
         SEARCH_MENU,
         SEARCH_INPUT,
+        FILTER_MENU,
+        EXT_FILTER_MENU,
+        DATE_FILTER_MENU,
+        SIZE_FILTER_MENU,
+        DIR_FILTER_MENU,
         EXITING
     }
 

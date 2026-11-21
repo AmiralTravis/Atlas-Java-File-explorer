@@ -8,7 +8,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import atlas.AtlasState;
@@ -61,6 +60,10 @@ public class UpdateIndex {
             Path indexPath = state.indexPath;
             
             IndexStore.writeIndex(state.atlasIndex, indexPath);
+
+
+            System.out.println("Updated Index via USN successfully!\n");
+
 
         } catch (IOException e) {
 
@@ -219,11 +222,9 @@ public class UpdateIndex {
 
             currentNode.setName(actualName);
 
-            index.getNodeIdsByName()
-                .computeIfAbsent(actualName, k -> new HashSet<>())
-                .add(currentNode.getId());
-
             index.getNodesById().put(currentNode.getId(), currentNode);
+
+            index.indexName(currentNode);
 
 
             if (parent != null) {
@@ -271,7 +272,6 @@ public class UpdateIndex {
 
     
     static void updateFileUpdation(AtlasState state) {
-        // System.out.println("dummy update file updation logic");
         // Do nothing for now
     }
 

@@ -105,7 +105,7 @@ public class ReadUsn {
         Index atlasIndex
     ) {
 
-        System.out.println("Proceeding to open volume");
+        // System.out.println("Proceeding to open volume");
         WinNT.HANDLE handle = openVolume("C");
 
         if (handle == null) {
@@ -311,7 +311,7 @@ public class ReadUsn {
             lastProcessedUsn = outputBuffer.getLong(0);
         }
 
-        System.out.println("lastProcessedUsnn: " + lastProcessedUsn);
+        // System.out.println("lastProcessedUsnn: " + lastProcessedUsn);
 
         updateRecord.addLastProcessedUsn(updateRecord, lastProcessedUsn);
 
