@@ -39,9 +39,21 @@ public class ChangeMode {
 
     static void searchMode(AtlasState state) {
 
+        if (state.atlasIndex == null) {
+            System.out.println("No index available, please build an index first.\n");
+            return;
+        }
+
         state.currentState = AtlasState.AppState.SEARCH_MENU;
 
     }
+
+    static void searchInputMode(AtlasState state) {
+
+        state.currentState = AtlasState.AppState.SEARCH_INPUT;
+
+    }
+
 
     static void updateIndexMode(AtlasState state) {
 

@@ -28,6 +28,21 @@ public class CommandOps {
             return "";
         }
 
+
+        if (state.currentState.equals(AtlasState.AppState.SEARCH_INPUT)) {
+
+            if (command.equals("back")) {
+                state.currentState = AtlasState.AppState.SEARCH_MENU;
+            }
+
+            else {
+                SearchCommands.handleSearchByName(state, command);
+            }
+
+            return "";
+        }
+
+
         if (state.currentState.equals(AtlasState.AppState.PRE_SCANNING)) {
             handlePreScanCommands(command, state, executor);
 
@@ -166,6 +181,10 @@ public class CommandOps {
             ChangeMode.searchMode(state);
         }
 
+        else if (command.equals("search by name")) {
+            ChangeMode.searchInputMode(state);
+        }
+
         else if (command.equals("index") | command.equals("index menu")) {
             ChangeMode.indexMode(state);
         }
@@ -180,11 +199,6 @@ public class CommandOps {
             DirectoryBrowser.parentDir(state);
         }
 
-
-
-        else if (command.equals("search by name")) {
-            SearchCommands.handleSearchByName(state);
-        }
 
         else if (command.equals("change filters")) {
             SearchCommands.handleChangeFilters(state);

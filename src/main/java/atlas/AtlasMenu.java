@@ -327,6 +327,26 @@ class AtlasMenu {
         
         }
 
+
+        else if (appState.equals(AtlasState.AppState.SEARCH_INPUT)) {
+
+            message = """
+                    ============SEARCH BY NAME=============
+
+                    Enter an exact filename to search.
+
+                    Type 'back' to return to the search menu.
+
+                    Enter filename:
+                    """;
+
+            state.currentCommands = new ArrayList<>();
+
+            return message;
+        }
+
+
+
         else {
 
             message = "invalid state";
