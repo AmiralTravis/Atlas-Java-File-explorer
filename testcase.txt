@@ -1,49 +1,76 @@
-===10:49pm 15-11-2026===
+===8:53pm 21-11-2026===
 ===final test case before commit===
 ===case description : {
-    updated the undo deletion special case, to support undo deletion of folders as well.
+    done with delete index, and rescan index logic, added index.ignore logic to skip directories 
+    like venv, node_modules, etc. and searched a super specific file after indexing the whole
+    downloads folder... 
 }===
 
 
 ===Test : [
     {
+     
         
 
 
- Name: another folder2 | ID: 7318349394726254 | Parent ID: 4222124650947523 | Type: DIRECTORY | FileRecord: null
- Name:     testfoldr12 | ID: 18295873486379224 | Parent ID: 7318349394726254 | Type: DIRECTORY | FileRecord: null
- Name:         New Text Document.txt | ID: 4222124650927020 | Parent ID: 18295873486379224 | Type: FILE | FileRecord: atlas.FileRecord@6895a785
- Name:         testmovefolder | ID: 22236523160215921 | Parent ID: 18295873486379224 | Type: DIRECTORY | FileRecord: null
- Name:             test2 | ID: 39125021762832287 | Parent ID: 22236523160215921 | Type: DIRECTORY | FileRecord: null
- Name:                 test2.1 | ID: 8444249301586758 | Parent ID: 39125021762832287 | Type: DIRECTORY | FileRecord: null
- Name:                     randomtext doc1.txt | ID: 10977524091761252 | Parent ID: 8444249301586758 | Type: FILE | FileRecord: atlas.FileRecord@184f6be2
- Name:             tusf1 | ID: 17732923532966039 | Parent ID: 22236523160215921 | Type: DIRECTORY | FileRecord: null
- Name:     testdoc12.txt | ID: 3096224744065219 | Parent ID: 7318349394726254 | Type: FILE | FileRecord: atlas.FileRecord@27a5f880
+============SEARCH BY NAME=============
+
+Enter an exact filename to search.
+
+Type 'back' to return to the search menu.
+
+Enter filename:
+
+first context based on-off + citations on-off + multi-lang on-off + date and timezone aware + citation filter +token streaming chat- basic success.txt
+
+=======================================
 
 
+Found 1 exact and 1 similar matches.
 
+--- Exact matches ---
 
+first context based on-off + citations on-off + multi-lang on-off + date and timezone aware + citation filter +token streaming chat- basic success.txt
+  Path: Downloads\coding\projects\projects\saas-rag-prjct-try1\imp-notes\tests and chat outputs\progress-tests\first context based on-off + citations on-off + multi-lang on-off + date and timezone aware + citation filter +token streaming chat- basic success.txt
+  Type: FILE | ID: 16325548649260209
 
+--- Similar matches ---
 
- Name: another folder2 | ID: 7318349394726254 | Parent ID: 4222124650947523 | Type: DIRECTORY | FileRecord: null
- Name:     testfoldr12 | ID: 18295873486379224 | Parent ID: 7318349394726254 | Type: DIRECTORY | FileRecord: null
- Name:         New Text Document.txt | ID: 4222124650927020 | Parent ID: 18295873486379224 | Type: FILE | FileRecord: atlas.FileRecord@6895a785
- Name:         testmovefolder | ID: 22236523160215921 | Parent ID: 18295873486379224 | Type: DIRECTORY | FileRecord: null
- Name:             test2 | ID: 39125021762832287 | Parent ID: 22236523160215921 | Type: DIRECTORY | FileRecord: null
- Name:                 test2.1 | ID: 8444249301586758 | Parent ID: 39125021762832287 | Type: DIRECTORY | FileRecord: null
- Name:                     randomtext doc1.txt | ID: 10977524091761252 | Parent ID: 8444249301586758 | Type: FILE | FileRecord: atlas.FileRecord@184f6be2
- Name:             tusf1 | ID: 17732923532966039 | Parent ID: 22236523160215921 | Type: DIRECTORY | FileRecord: null
- Name:                 tusf2 | ID: 107241966126926970 | Parent ID: 17732923532966039 | Type: DIRECTORY | FileRecord: null
- Name:                     tusf3 | ID: 5348024557698622 | Parent ID: 107241966126926970 | Type: DIRECTORY | FileRecord: null
- Name:                         New Text Document4.txt | ID: 104427216359712346 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@33723e30
- Name:                         tusftExt.txt | ID: 13792273858909928 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@64f6106c
- Name:                         New Text Document1.txt | ID: 25051272927297303 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@553a3d88
- Name:                         New Text Document2.txt | ID: 121034239985629159 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@7a30d1e6
- Name:                         New Text Document3.txt | ID: 90916417477631759 | Parent ID: 5348024557698622 | Type: FILE | FileRecord: atlas.FileRecord@5891e32e
- Name:     testdoc12.txt | ID: 3096224744065219 | Parent ID: 7318349394726254 | Type: FILE | FileRecord: atlas.FileRecord@27a5f880
+first context based on-off + citations on-off + multi-lang on-off + date and timezone aware chat- basic success.txt  (76% match)
+  Path: Downloads\coding\projects\projects\saas-rag-prjct-try1\imp-notes\tests and chat outputs\progress-tests\first context based on-off + citations on-off + multi-lang on-off + date and timezone aware chat- basic success.txt
+  Type: FILE | ID: 73464968921523828
 
 
 
     }
+
+
+
+
+
+
+
+
+
+
+
+    
+Found 1 exact and 1 similar matches.
+
+--- Exact matches ---
+
+first context based on-off + citations on-off + multi-lang on-off + date and timezone aware + citation filter +token streaming chat- basic success.txt
+  Path: Downloads\coding\projects\projects\saas-rag-prjct-try1\imp-notes\tests and chat outputs\progress-tests\first context based on-off + citations on-off + multi-lang on-off + date and timezone aware + citation filter +token streaming chat- basic success.txt
+  Type: FILE | ID: 16325548649260209
+
+--- Similar matches ---
+
+first context based on-off + citations on-off + multi-lang on-off + date and timezone aware chat- basic success.txt  (76% match)
+  Path: Downloads\coding\projects\projects\saas-rag-prjct-try1\imp-notes\tests and chat outputs\progress-tests\first context based on-off + citations on-off + multi-lang on-off + date and timezone aware chat- basic success.txt
+  Type: FILE | ID: 73464968921523828
+
+
+
+
 ]===
 

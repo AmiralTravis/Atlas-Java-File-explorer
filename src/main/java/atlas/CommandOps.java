@@ -73,7 +73,7 @@ public class CommandOps {
             (command.equals("proceed") || command.equals("cancel"))
             && !state.confState.equals(AtlasState.ConfirmationMenuState.NONE)
         ) {
-            handleReconfirmation(command, state);
+            handleReconfirmation(command, state, executor);
             return "";
         }
 
@@ -100,7 +100,8 @@ public class CommandOps {
     }
 
 
-    static void handleReconfirmation(String command, AtlasState state) {
+    static void handleReconfirmation(String command, AtlasState state, ExecutorService executor) {
+    
         if (state.confState.equals(AtlasState.ConfirmationMenuState.DELETE_INDEX)) {
             if (command.equals("proceed")) {
                 ScanUtils.runDeleteIndex(state);
@@ -115,7 +116,7 @@ public class CommandOps {
 
         else if (state.confState.equals(AtlasState.ConfirmationMenuState.RESCAN)) {
             if (command.equals("proceed")) {
-                ScanUtils.runReScan(state);
+                ScanUtils.runReScan(state, executor);
             }
 
             else {
@@ -269,7 +270,14 @@ public class CommandOps {
             ChangeMode.scanMode(state);
 
             state.scanFuture = executor.submit(() -> {
-                ScanUtils.startScan(state);
+                try {
+                    ScanUtils.startScan(state);
+                } catch (Throwable t) {
+                    System.err.println("\nScan crashed at: " + state.currentScanPath);
+                    t.printStackTrace();
+                    state.atlasIndex = null;
+                    state.currentState = AtlasState.AppState.MAIN_MENU;
+                }
             });
 
 

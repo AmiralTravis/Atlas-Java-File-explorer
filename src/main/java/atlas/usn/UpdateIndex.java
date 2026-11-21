@@ -13,12 +13,17 @@ import java.util.Map;
 import atlas.AtlasState;
 import atlas.FileRecord;
 import atlas.scanner.FileSystemNode;
+import atlas.scanner.IgnoreList;
 import atlas.scanner.Index;
 import atlas.scanner.IndexStore;
 
 public class UpdateIndex {
     
+    private static IgnoreList ignoreList = IgnoreList.load();
+
     static void updateIndexByUsn(UsnUpdateRecords updateRecord, AtlasState state) {
+
+        ignoreList = IgnoreList.load(); // pick up any edits to atlas.ignore
 
         // System.out.println("\n\n");
         // state.atlasIndex.printTree();
@@ -89,6 +94,13 @@ public class UpdateIndex {
 
         // 2. Check if node already exists
         if (atlasIndex.getNode(fileId) != null) {
+            return;
+        }
+
+        // skip anything inside an ignored directory
+        Path fullPath = record.getFullPath();
+
+        if (fullPath != null && ignoreList.isIgnoredPath(fullPath)) {
             return;
         }
 
@@ -318,7 +330,7 @@ public class UpdateIndex {
 
         Path path = record.getFullPath();
 
-        if (path == null || !Files.exists(path)) {
+        if (path == null || !Files.exists(path) || ignoreList.isIgnoredPath(path)) {
             return;
         }
 

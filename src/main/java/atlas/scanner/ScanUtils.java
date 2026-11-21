@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
 
 import atlas.AtlasState;
 import atlas.ChangeMode;
@@ -36,10 +37,14 @@ public class ScanUtils {
         ScanResult result = FileScanner.scan(
             state.tempPaths, 
             state.currentScanResult,
-            state.atlasIndex 
+            state.atlasIndex,
+            state 
         );
 
-        // state.atlasIndex.printTree();
+        // scan was cancelled: don't save a partial index
+        if (Thread.currentThread().isInterrupted()) {
+            return;
+        }
 
         state.atlasIndex.filesIndexed = result.getFilesFound();
         state.atlasIndex.foldersIndexed = result.getFoldersFound();
@@ -109,6 +114,7 @@ public class ScanUtils {
             state.currentScanPath = null;
             state.currentScanResult = null;
             state.scanFuture = null;
+            state.atlasIndex = null; // drop the half-built index so search can't use it
 
         }
 
@@ -132,6 +138,9 @@ public class ScanUtils {
         String message;
 
         if (state.currentState == AtlasState.AppState.SCANNING) {
+
+            Path current = state.currentScanPath;
+            System.out.println("\nCurrently scanning: " + (current == null ? "starting..." : current));
 
             message = """
                     
@@ -206,14 +215,81 @@ public class ScanUtils {
 
     }
 
-    public static void runDeleteIndex(AtlasState state) {
-        System.out.println("dummy delete index logic...");
+        public static void runDeleteIndex(AtlasState state) {
+
+        try {
+
+            Files.deleteIfExists(state.indexPath);
+
+            state.atlasIndex = null;
+            state.currentFilters.directories.clear(); // these ids belonged to the deleted index
+
+            System.out.println("Index deleted successfully.\n");
+
+        } catch (IOException e) {
+
+            System.out.println("Could not delete index: " + e.getMessage() + "\n");
+
+        }
+
+        // resets confState and picks NO_INDEX / WITH_INDEX from whether the file exists
         ChangeMode.indexMode(state);
     }
 
-    public static void runReScan(AtlasState state) {
-        System.out.println("dummy rescan logic....");
-        ChangeMode.indexMode(state);
+    public static void runReScan(AtlasState state, ExecutorService executor) {
+
+        // 1. Remember which directories the old index covered
+        Index oldIndex = state.atlasIndex;
+
+        if (oldIndex == null) {
+            try {
+                oldIndex = IndexStore.readIndex(state.indexPath);
+            } catch (IOException | ClassNotFoundException e) {
+                System.out.println("Could not read the existing index: " + e.getMessage() + "\n");
+                ChangeMode.indexMode(state);
+                return;
+            }
+        }
+
+        ArrayList<Path> dirs = oldIndex.getDirectoryList(oldIndex);
+
+        if (dirs.isEmpty()) {
+            System.out.println("The existing index has no directories to rescan.\n");
+            ChangeMode.indexMode(state);
+            return;
+        }
+
+        // 2. Delete the old index
+        try {
+            Files.deleteIfExists(state.indexPath);
+        } catch (IOException e) {
+            System.out.println("Could not delete old index: " + e.getMessage() + "\n");
+            ChangeMode.indexMode(state);
+            return;
+        }
+
+        state.atlasIndex = null;
+        state.currentFilters.directories.clear();
+
+        // 3. Run the normal scan on the same directories
+        state.tempPaths = dirs;
+        state.confState = AtlasState.ConfirmationMenuState.NONE;
+
+        System.out.println("Old index deleted. Rescanning " + dirs.size() + " director"
+            + (dirs.size() == 1 ? "y" : "ies") + "...\n");
+
+        ChangeMode.scanMode(state);
+
+        state.scanFuture = executor.submit(() -> {
+            try {
+                startScan(state);
+            } catch (Throwable t) {
+                System.err.println("\nScan crashed at: " + state.currentScanPath);
+                t.printStackTrace();
+                state.atlasIndex = null;
+                state.currentState = AtlasState.AppState.MAIN_MENU;
+            }
+        });
     }
 
 

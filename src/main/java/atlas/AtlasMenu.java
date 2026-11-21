@@ -178,7 +178,7 @@ class AtlasMenu {
                     message = """
                             ==============DELETE INDEX MENU===============
                             Are you sure you want to delete index? 
-                            You will lose x bytes worth of current indexed data. 
+                            You will lose your current indexed data. 
                             This action can not be undone. 
 
                             proceed
@@ -204,7 +204,7 @@ class AtlasMenu {
                             ==============RESCAN INDEX MENU===============
                             Are you sure you want a full rescan? 
                             This will delete the current index and build index from scratch. 
-                            You will lose x bytes worth of current index data. 
+                            You will lose your current index data. 
                             This action can not be undone.
 
                             proceed
