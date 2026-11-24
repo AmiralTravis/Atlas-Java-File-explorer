@@ -28,6 +28,8 @@ public class Index implements Serializable {
     public int foldersIndexed;
     public int skippedItems;
 
+    public LocalDateTime createdAt;
+
     public LocalDateTime modifiedAt;
 
     public long lastProcessedUsn;

@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import atlas.AtlasState;
@@ -67,6 +68,7 @@ public class UpdateIndex {
         try {
 
             state.atlasIndex.lastProcessedUsn = updateRecord.lastProcessedUsn;
+            state.atlasIndex.modifiedAt = LocalDateTime.now();
     
             Path indexPath = state.indexPath;
             

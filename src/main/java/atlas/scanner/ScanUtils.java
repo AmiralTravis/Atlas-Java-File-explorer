@@ -49,6 +49,8 @@ public class ScanUtils {
         newIndex.filesIndexed = result.getFilesFound();
         newIndex.foldersIndexed = result.getFoldersFound();
         newIndex.skippedItems = result.getSkippedFound();
+        
+        newIndex.createdAt = LocalDateTime.now();
         newIndex.modifiedAt = LocalDateTime.now();
 
         synchronized (state.indexLock) {
@@ -194,7 +196,9 @@ public class ScanUtils {
         System.out.println("\nIndexed files: " + state.atlasIndex.filesIndexed);
         System.out.println("Indexed folders: " + state.atlasIndex.foldersIndexed);
         System.out.println("Skipped items: " + state.atlasIndex.skippedItems);
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a, d MMMM yyyy");
+        System.out.println("Created on: " + state.atlasIndex.createdAt.format(formatter));
         System.out.println("Last updated: " + state.atlasIndex.modifiedAt.format(formatter) + "\n");
      
         
