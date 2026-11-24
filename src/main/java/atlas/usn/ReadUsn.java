@@ -156,10 +156,10 @@ public class ReadUsn {
             int error = Kernel32.INSTANCE.GetLastError();
 
             if (error == 5) {
-                // System.out.println(
-                //     "Access denied. Please run Atlas as Administrator " +
-                //     "to use the USN Journal.\n"
-                // );
+                System.out.println(
+                    "Access denied. Please run Atlas as Administrator " +
+                    "to use the USN Journal.\n"
+                );
 
                 return null;
             }

@@ -28,6 +28,12 @@ public class CommandOps {
             return "";
         }
 
+        if (command.equalsIgnoreCase("show search by name menu")) {
+            // state.currentState = AtlasState.AppState.SEARCH_INPUT;
+            ChangeMode.searchInputMode(state);
+            return "";
+        }
+
 
         if (state.currentState.equals(AtlasState.AppState.SEARCH_INPUT)) {
 
