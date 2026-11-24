@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import atlas.scanner.IndexStore;
+import atlas.usn.AutoUsnUpdater;
 import atlas.scanner.Index;
 
 class Atlas {
@@ -42,6 +43,8 @@ class Atlas {
         }
 
 
+
+        AutoUsnUpdater.start(state);
 
         InputThread input = new InputThread(state);
 

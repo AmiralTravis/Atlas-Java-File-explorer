@@ -15,7 +15,7 @@ public class CommandOps {
     static Set<String> isNonThreadOp = Set.of(
         "show current", "parent dir", "progress", "cancel", "browse", "search", 
         "search by name", "change filters", "index", "about index", "main menu", 
-        "update index", "delete index", "index menu", "full rescan", "use usn", 
+        "update index", "delete index", "index menu", "full rescan",
         "create index"
     );
     // static Set<String> isThreadOp = Set.of("create index");
@@ -251,9 +251,6 @@ public class CommandOps {
             ChangeMode.fullRescanMode(state);
         }
 
-        else if (command.equals("use usn")) {
-            ScanUtils.runUsnUpdate(state);
-        }
 
         else if (command.equals("create index")) {
 

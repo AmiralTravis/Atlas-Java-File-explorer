@@ -3,12 +3,14 @@ package atlas.usn;
 import com.sun.jna.Native;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import com.sun.jna.Memory;
@@ -90,6 +92,12 @@ static UsnUpdateRecords parseAndReturnUsnRecords(
             
 
 
+
+            // ignore the app's own index file (and its temp file) before any path lookups
+            if (isOwnIndexFile(parentFileRef, buffer, offset + nameOffset, nameLength)) {
+                offset = (offset + length + 7) & ~7L;
+                continue;
+            }
 
             String fullPath = getFullPathByFileId(volumeHandle, fileRef);
 
@@ -220,6 +228,51 @@ static UsnUpdateRecords parseAndReturnUsnRecords(
 
     return updates;
 
+}
+
+
+private static final Set<String> OWN_FILES = Set.of("atlas.index", "atlas.index.tmp");
+
+private static boolean ownDirResolved = false;
+private static long ownDirFrn = -1;   // -1 = unknown
+
+// FRN of the directory holding atlas.index. The file's own FRN changes on every save
+// (tmp file is moved over it), but its directory's FRN is stable.
+private static synchronized long ownDirFrn() {
+
+    if (!ownDirResolved) {
+
+        ownDirResolved = true;
+
+        try {
+            Path dir = Path.of("atlas.index").toAbsolutePath().getParent();
+            ownDirFrn = ReadUsn.getFileId(dir);
+        } catch (RuntimeException e) {
+            System.err.println("Could not resolve atlas.index directory id: " + e.getMessage());
+            ownDirFrn = -1;
+        }
+    }
+
+    return ownDirFrn;
+}
+
+private static boolean isOwnIndexFile(
+    long parentFileRef, Memory buffer, long nameStart, int nameLength
+) {
+
+    if (nameLength > 40) return false; // "atlas.index.tmp" is 30 bytes in UTF-16
+
+    String name = new String(
+        buffer.getByteArray(nameStart, nameLength),
+        StandardCharsets.UTF_16LE
+    ).toLowerCase();
+
+    if (!OWN_FILES.contains(name)) return false;
+
+    long frn = ownDirFrn();
+
+    // if the directory id couldn't be resolved, fall back to name-only matching
+    return frn == -1 || frn == parentFileRef;
 }
 
 

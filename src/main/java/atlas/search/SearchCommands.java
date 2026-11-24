@@ -19,6 +19,12 @@ public class SearchCommands {
     // ===================== SEARCH =====================
 
     public static void handleSearchByName(AtlasState state, String name) {
+        synchronized (state.indexLock) {
+            searchUnlocked(state, name);
+        }
+    }
+
+    private static void searchUnlocked(AtlasState state, String name) {
 
         if (state.atlasIndex == null) {
             System.out.println("No index available.\n");

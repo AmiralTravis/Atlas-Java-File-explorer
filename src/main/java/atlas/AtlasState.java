@@ -74,6 +74,8 @@ public class AtlasState {
 
     public FilterState currentFilters = new FilterState();
 
+    public final Object indexLock = new Object(); // guards atlasIndex mutationscurrentFilters = new FilterState();
+
 }
 
 

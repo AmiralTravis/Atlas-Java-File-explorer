@@ -119,7 +119,6 @@ class AtlasMenu {
                             ==============UPDATE INDEX MENU===============
 
                             full rescan
-                            use usn
                             index menu
                             main menu
 
@@ -128,7 +127,6 @@ class AtlasMenu {
 
                     state.currentCommands = new ArrayList<>(List.of(
                         "full rescan",
-                        "use usn",
                         "index menu",
                         "main menu"
                     ));

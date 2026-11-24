@@ -324,6 +324,63 @@ public class ReadUsn {
 
 
 
+    // Blocks (no timeout) until the journal has records after startUsn.
+    // Returns true if there are new records. Only a wake-up signal:
+    // the real reading is done by the normal update logic.
+    public static boolean waitForUsnChange(long startUsn) {
+
+        WinNT.HANDLE handle = openVolume("C");
+
+        if (handle == null) {
+            throw new IllegalStateException(
+                "Failed to open volume C: (run Atlas as Administrator)"
+            );
+        }
+
+        try {
+
+            USN_JOURNAL_DATA_V0 journal = accessUsnJournal(handle);
+
+            READ_USN_JOURNAL_DATA_V0 readData = new READ_USN_JOURNAL_DATA_V0();
+
+            readData.StartUsn = (startUsn == 0) ? journal.FirstUsn : startUsn;
+            readData.ReasonMask = 0xFFFFFFFF;
+            readData.ReturnOnlyOnClose = 0;
+            readData.Timeout = 0;          // 0 + BytesToWaitFor > 0 = wait indefinitely
+            readData.BytesToWaitFor = 1;
+            readData.UsnJournalID = journal.UsnJournalID;
+
+            readData.write();
+
+            Memory buffer = new Memory(64 * 1024);
+            IntByReference bytesReturned = new IntByReference();
+
+            boolean success = Kernel32.INSTANCE.DeviceIoControl(
+                handle,
+                FSCTL_READ_USN_JOURNAL,
+                readData.getPointer(),
+                readData.size(),
+                buffer,
+                (int) buffer.size(),
+                bytesReturned,
+                Pointer.NULL
+            );
+
+            if (!success) {
+                throw new RuntimeException(
+                    "USN wait failed. Error: " + Kernel32.INSTANCE.GetLastError()
+                );
+            }
+
+            // first 8 bytes are the next USN; anything beyond is real records
+            return bytesReturned.getValue() > 8;
+
+        } finally {
+            closeVolume(handle);
+        }
+    }
+
+
     // HELPER METHOD FOR OTHER FILES AND PACKAGES
 
     public static long getLastRecordedUsn() {

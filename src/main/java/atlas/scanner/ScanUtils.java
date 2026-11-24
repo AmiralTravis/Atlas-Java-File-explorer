@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutorService;
 
 import atlas.AtlasState;
 import atlas.ChangeMode;
-import atlas.usn.UsnVolume;
+import atlas.usn.AutoUsnUpdater;
 import atlas.usn.ReadUsn;
 
 public class ScanUtils {
@@ -26,55 +26,59 @@ public class ScanUtils {
         AtlasState state
     ) {
 
-
         state.currentScanResult = new ScanResult();
 
-        state.atlasIndex = new Index();
-        
-        state.atlasIndex.lastProcessedUsn = ReadUsn.getLastRecordedUsn();
-        // System.out.println("last recorded usn before scan: " + state.atlasIndex.lastProcessedUsn);
+        // build into a local index and publish it only when complete,
+        // so the auto updater and search never see a half-built index
+        Index newIndex = new Index();
+
+        newIndex.lastProcessedUsn = ReadUsn.getLastRecordedUsn();
 
         ScanResult result = FileScanner.scan(
-            state.tempPaths, 
+            state.tempPaths,
             state.currentScanResult,
-            state.atlasIndex,
-            state 
+            newIndex,
+            state
         );
 
-        // scan was cancelled: don't save a partial index
+        // scan was cancelled: discard the partial index
         if (Thread.currentThread().isInterrupted()) {
             return;
         }
 
-        state.atlasIndex.filesIndexed = result.getFilesFound();
-        state.atlasIndex.foldersIndexed = result.getFoldersFound();
-        state.atlasIndex.skippedItems = result.getSkippedFound();
-        
-        LocalDateTime modifiedTime = LocalDateTime.now();
-        state.atlasIndex.modifiedAt = modifiedTime;
+        newIndex.filesIndexed = result.getFilesFound();
+        newIndex.foldersIndexed = result.getFoldersFound();
+        newIndex.skippedItems = result.getSkippedFound();
+        newIndex.modifiedAt = LocalDateTime.now();
 
-        try {
-    
-            Path indexPath = state.indexPath;
-            
-            IndexStore.writeIndex(state.atlasIndex, indexPath);
+        synchronized (state.indexLock) {
 
-        } catch (IOException e) {
+            state.atlasIndex = newIndex;
 
-            System.err.println("Failed to save Index to disk");
-            e.printStackTrace();
+            try {
 
+                IndexStore.writeIndex(newIndex, state.indexPath);
+
+            } catch (IOException e) {
+
+                System.err.println("Failed to save Index to disk");
+                e.printStackTrace();
+
+            }
         }
+
+        // wakes the updater; it replays anything that changed during the scan
+        AutoUsnUpdater.notifyIndexReady();
 
         try {
 
             state.actionQueue.put(result);
-        
+
         } catch (InterruptedException e) {
-            
+
             Thread.currentThread().interrupt();
             return;
-        
+
         }
 
     }
@@ -192,6 +196,12 @@ public class ScanUtils {
         System.out.println("Skipped items: " + state.atlasIndex.skippedItems);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a, d MMMM yyyy");
         System.out.println("Last updated: " + state.atlasIndex.modifiedAt.format(formatter) + "\n");
+     
+        
+        // System.out.println("\n\n");
+        // state.atlasIndex.printTree();
+        // System.out.println("\n\n");
+
         
     }
 
@@ -208,14 +218,14 @@ public class ScanUtils {
     // NON SCANNING HELPER, INDEX RELATED UTILS 
     // -- SHALL MAKE A NEW FOLDER OR FILE IF THIS SECTION GROWS IN FUTURE
 
-    public static void runUsnUpdate(AtlasState state) {
 
-        UsnVolume.updateIndexByUsnJournal(state);
-        ChangeMode.indexMode(state);
-
+    public static void runDeleteIndex(AtlasState state) {
+        synchronized (state.indexLock) {
+            deleteIndexLocked(state);
+        }
     }
 
-        public static void runDeleteIndex(AtlasState state) {
+    private static void deleteIndexLocked(AtlasState state) {
 
         try {
 
@@ -237,6 +247,12 @@ public class ScanUtils {
     }
 
     public static void runReScan(AtlasState state, ExecutorService executor) {
+        synchronized (state.indexLock) {
+            reScanLocked(state, executor);
+        }
+    }
+
+    private static void reScanLocked(AtlasState state, ExecutorService executor) {
 
         // 1. Remember which directories the old index covered
         Index oldIndex = state.atlasIndex;
