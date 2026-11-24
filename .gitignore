@@ -15,3 +15,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+#  atlas specific
+atlas.index
+atlas.index.tmp
