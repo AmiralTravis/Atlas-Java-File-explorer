@@ -7,8 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import atlas.AtlasState;
 import atlas.FileRecord;
@@ -334,18 +332,6 @@ public class UpdateIndex {
             return;
         }
 
-        long rootId = record.getFileRef();
-        long rootParentId = record.getParentFileRef();
-
-        // The parent must already exist in the index.
-        // if (index.getNode(rootParentId) == null) {
-        //     System.out.println("Restore failed: parent node not found.");
-        //     return;
-        // }
-
-        // Maps directory paths to their IDs during traversal.
-        Map<Path, Long> directoryIds = new HashMap<>();
-
         try {
 
             Files.walkFileTree(
@@ -358,15 +344,9 @@ public class UpdateIndex {
                         BasicFileAttributes attributes
                     ) {
 
-                        long directoryId = directory.equals(path)
-                            ? rootId
-                            : ReadUsn.getFileId(directory);
+                        long directoryId = ReadUsn.getFileId(directory);
 
-                        long parentId = directory.equals(path)
-                            ? rootParentId
-                            : directoryIds.get(directory.getParent());
-
-                        directoryIds.put(directory, directoryId);
+                        long parentId = ReadUsn.getParentFileId(directory);
 
                         FileSystemNode node = new FileSystemNode(
                             directoryId,
@@ -388,13 +368,9 @@ public class UpdateIndex {
                         BasicFileAttributes attributes
                     ) {
 
-                        long fileId = file.equals(path)
-                            ? rootId
-                            : ReadUsn.getFileId(file);
+                        long fileId = ReadUsn.getFileId(file);
 
-                        long parentId = file.equals(path)
-                            ? rootParentId
-                            : directoryIds.get(file.getParent());
+                        long parentId = ReadUsn.getParentFileId(file);
 
                         FileRecord fileRecord = new FileRecord(
                             file,
