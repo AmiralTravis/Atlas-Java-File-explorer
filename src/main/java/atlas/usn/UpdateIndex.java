@@ -268,14 +268,14 @@ public class UpdateIndex {
         
         FileSystemNode newParent = index.getNode(actualParentId);
 
-        // if (newParent == null) {
-        //     System.out.println(
-        //         "Actual parent not found in index. Rescan required." + 
-        //         "(OR)" + 
-        //         "reached end of tree in index."
-        //     );
-        //     return;
-        // }
+        if (newParent == null) {
+            // System.out.println(
+            //     "Actual parent not found in index. Rescan required." + 
+            //     "(OR)" + 
+            //     "reached end of tree in index."
+            // );
+            return;
+        }
 
         FileSystemNode oldParent = currentNode;
 
